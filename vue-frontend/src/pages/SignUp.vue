@@ -7,11 +7,10 @@
         <form action="/">
 
           <label for="chk">Sign up</label>
-          <input type="text" name="txt" placeholder="User name" required="">
-
-          <input type="email" name="email" id="" placeholder="email" required="">
-          <input type="password" name="pswd" placeholder="password" id="" required="">
-          <input type="password" name="pswd" placeholder="chk password" id="" required="">
+          <input type="text" id="FullName" placeholder="Full Name" required="" autocomplete="off">
+          <input type="email"  id="UsrEmail" placeholder="Email" required="" autocomplete="off">
+          <input type="password" id="UsrPsw" placeholder="Password"  required="" autocomplete="off">
+          <input type="password" id="UsrCfrmPsw" placeholder="Retype Password"  required="" autocomplete="off">
           <button>Sign up</button>
         </form>
       </div>
