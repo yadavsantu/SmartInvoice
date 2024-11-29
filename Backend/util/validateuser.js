@@ -1,6 +1,6 @@
 const Joi = require('joi');
 
-const validateUser = (req, res, next) => {
+const   validateUser = (req, res, next) => {
     const Schema = Joi.object({
         
       fullName: Joi.string().required(),
