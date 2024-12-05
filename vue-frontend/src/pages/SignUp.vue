@@ -11,22 +11,22 @@
         <div class="name-container">
 
           <label for="full-name">Full Name</label>
-          <input type="text" id="full-name" placeholder="Full Name" required autocomplete="off">
+          <input type="text" id="full-name" placeholder="Full Name" required autocomplete="off" v-model="FullName">
 
 
 
           <label for="UsrEmail">Email</label>
-          <input type="email" id="UsrEmail" placeholder="Email" required="" autocomplete="off">
+          <input type="email" id="UsrEmail" placeholder="Email" required="" autocomplete="off" v-model="Email">
 
           <label for="UsrPsw">Password</label>
-          <input type="password" id="UsrPsw" placeholder="Password" required="" autocomplete="off">
+          <input type="password" id="UsrPsw" placeholder="Password" required="" autocomplete="off" v-model="Password">
 
           <label for="UsrCfrmPsw">Confirm Password</label>
-          <input type="password" id="UsrCfrmPsw" placeholder="Confirm Password" required="" autocomplete="off">
+          <input type="password" id="UsrCfrmPsw" placeholder="Confirm Password" required="" autocomplete="off" v-model="repeat_password">
         </div>
         <button>Sign up</button>
       </form>
-      <p id="errorMessage" style="color: red;"></p>
+      <p v-if="errorMessage"> {{ errorMessage }} </p>
     </div>
   </div>
 
@@ -168,21 +168,31 @@ button:hover {
 import axios from 'axios';
 
 export default {
+  name: "SignUp",
+  data() {
+    return {
+      FullName: "",
+      Email: "",
+      Password: "",
+      repeat_password: "",
+      errorMessage: "",
+    };
+  },
   methods: {
     async handleSignUp() {
-      const FullName = document.getElementById("full-name").value;
-      const Email = document.getElementById("UsrEmail").value;
-      const Password = document.getElementById("UsrPsw").value;
-      const Retype_password = document.getElementById("UsrCfrmPsw").value;
-      const displayError = document.getElementById("errorMessage");
-
+      console.log("signUp")
+      const FullName = this.FullName;
+      const Email = this.Email;
+      const Password = this.Password;
+      const Retype_password = this.repeat_password;
+    
       if (Password.length < 6) {
-        displayError.innerText = "Password length should be at least 6 characters.";
+        this.errorMessage = "Password length should be at least 6 characters"
         return;
       }
 
-      if (Password !== Retype_password) {
-        displayError.innerText = "Passwords do not match. Please check and try again.";
+      if (Password != Retype_password) {
+        this.errorMessage = "Password Do not match. Please check your password";
         return;
       }
 
@@ -192,15 +202,29 @@ export default {
           email: Email,
           password: Password,
           repeat_password: Retype_password,
-        });
+        }
 
-        if (response.status === 201) {
-          alert("User Registration Successful");
-          displayError.innerText = " "; 
+        )
+
+
+        if (response.status == 201) {
+          {
+            alert("User Registration SucessFull")
+            this.$router.push('/LoginPage')
+          }
+          
+
         }
       } catch (error) {
-        console.log("User Registration Failed", error);
-        displayError.innerText = "User Registration Failed. Please try again.";
+        
+        if (error.response && error.response.status === 409) { this.errorMessage = "Email already exist Please Use Different Email Address" }
+        
+        else
+        {
+          this.errorMessage="User Registration Failled ";
+        }
+        
+
       }
     },
   },
