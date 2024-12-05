@@ -20,10 +20,8 @@
         </div>
 
         <div class="check-rem">
-          <label for="remember-me" class="remember-label">
             <input type="checkbox" id="remember-me" v-model="rememberMe" class="remember-checkbox" /> 
-            Remember me
-          </label>
+            <label for="remember-me">Remember Me</label>
         </div>
 
         <button type="submit" class="btn-primary">Login</button>
@@ -135,12 +133,12 @@ body {
   margin-bottom: 0.5rem;
   font-weight: bold;
   color: #6474BC;
-  font-size: 1.2rem;
+  font-size: 1rem;
 }
 
 form input {
   width: 100%;
-  padding: 1.2rem;
+  padding: 0.5rem;
   border: 1px solid #ced4da;
   border-radius: 5px;
   font-size: 1rem;
@@ -150,6 +148,8 @@ form input {
   display: flex;
   align-items: center;
   margin-bottom: 1rem;
+  color: #797f9a;
+  font-size: 0.9rem; 
 }
 
 .remember-checkbox {
@@ -158,10 +158,6 @@ form input {
   margin-right: 5px;
 }
 
-.remember-label {
-  color: #797f9a;
-  font-size: 0.9rem; 
-}
 
 button.btn-primary {
   width: 100%;
