@@ -145,10 +145,11 @@ body {
 .login-container p {
   color: #717272c3;
   margin-bottom: 1.5rem;
+  font-style: bold;
 }
 
 .login-container h1 {
-  margin-bottom: 1rem;
+  margin-bottom: 2px;
   color: #070885;
 }
 
