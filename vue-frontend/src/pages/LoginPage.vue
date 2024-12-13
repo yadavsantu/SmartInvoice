@@ -34,7 +34,6 @@
       </div>
 
 
-
     </div>
     <p v-if="errorMessage">{{ errorMessage }}</p>
   </div>
@@ -112,6 +111,7 @@ body {
   height: auto;
   max-width: 400px;
   text-align: center;
+  background-color: #6474BC;
 
 }
 
@@ -127,6 +127,7 @@ body {
   width: 20%;
   height: auto;
   margin-right: 1rem;
+  margin-top: 2rem;
   border-radius: 20%;
 }
 

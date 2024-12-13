@@ -14,7 +14,6 @@
           <input type="text" id="full-name" placeholder="Full Name" required autocomplete="off" v-model="FullName">
 
 
-
           <label for="UsrEmail">Email</label>
           <input type="email" id="UsrEmail" placeholder="Email" required="" autocomplete="off" v-model="Email">
 
@@ -55,6 +54,7 @@ body {
   height: 900px;
   max-width: 400px;
   text-align: center;
+  background-color: #6474BC;
 }
 
 .header {
@@ -78,7 +78,6 @@ body {
   color: black;
   margin-top: 2rem;
 }
-
 
 .main {
   max-width: 600px;
@@ -118,12 +117,10 @@ label {
   margin-bottom: 10px;
 }
 
-
 input:focus {
   border-color: #007BFF;
   outline: none;
 }
-
 
 input {
   width: 100%;
@@ -206,7 +203,6 @@ export default {
 
         )
 
-
         if (response.status == 201) {
           {
             alert("User Registration SucessFull")
@@ -230,3 +226,5 @@ export default {
   },
 };
 </script>
+
+
