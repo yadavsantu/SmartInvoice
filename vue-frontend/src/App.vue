@@ -1,15 +1,35 @@
 <template>
-  <div>
-    <router-view></router-view>
+  <div id="app">
+    <!-- Conditionally render NavBar -->
+    <NavBar v-if="$route.meta.showNavBar" />
+    <!-- Dynamic content area for pages -->
+    <router-view />
   </div>
 </template>
 
 <script>
-
+import NavBar from './components/navBar.vue';
 
 export default {
   name: 'App',
-  components: {},
+  components: {
+    NavBar,
+  },
 };
 </script>
 
+<style>
+/* Global resets or custom styles */
+html,
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  
+}
+
+#app {
+  min-height: 100vh;
+  background-color: #ecf0f1; /* Light gray for better contrast */
+}
+</style>
