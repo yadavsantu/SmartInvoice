@@ -43,13 +43,12 @@
               <input type="text" placeholder="Enter payment terms" />
             </div>
             <div class="form-group">
-            <label for="due-date">Due Date</label>
-            <input id="due-date" type="date" v-model="dueDate" />
-          </div>
+              <label for="due-date">Due Date</label>
+              <input id="due-date" type="date" v-model="dueDate" />
+            </div>
           </div>
 
           <!-- Due Date Section -->
-          
         </div>
         <div class="invoice-items">
           <table>
@@ -65,11 +64,23 @@
             <tbody>
               <!-- Loop over the items array to display rows -->
               <tr v-for="(item, index) in items" :key="index">
-                <td><input v-model="item.description" type="text" placeholder="Description of item/service..." /></td>
-                <td><input v-model="item.quantity" type="number" value="1" /></td>
+                <td>
+                  <input
+                    v-model="item.description"
+                    type="text"
+                    placeholder="Description of item/service..."
+                  />
+                </td>
+                <td>
+                  <input v-model="item.quantity" type="number" value="1" />
+                </td>
                 <td><input v-model="item.rate" type="text" value="0" /></td>
                 <td>{{ formattedAmount(item.amount) }}</td>
-                <td><button @click="removeItem(index)" class="remove-btn">Remove</button></td>
+                <td>
+                  <button @click="removeItem(index)" class="remove-btn">
+                    Remove
+                  </button>
+                </td>
               </tr>
             </tbody>
           </table>
@@ -80,11 +91,15 @@
         <div class="additional-fields">
           <div class="notes">
             <label>Notes</label>
-            <textarea placeholder="Notes - any relevant information not already covered"></textarea>
+            <textarea
+              placeholder="Notes - any relevant information not already covered"
+            ></textarea>
           </div>
           <div class="terms">
             <label>Terms</label>
-            <textarea placeholder="Terms and conditions - late fees, payment methods, delivery schedule"></textarea>
+            <textarea
+              placeholder="Terms and conditions - late fees, payment methods, delivery schedule"
+            ></textarea>
           </div>
         </div>
 
@@ -103,11 +118,21 @@
           </div>
           <div>
             <label>Discount</label>
-            <input v-model="discount" type="number" value="0" placeholder="Discount Amount" />
+            <input
+              v-model="discount"
+              type="number"
+              value="0"
+              placeholder="Discount Amount"
+            />
           </div>
           <div>
             <label>Shipping</label>
-            <input v-model="shipping" type="number" value="0" placeholder="Shipping Cost" />
+            <input
+              v-model="shipping"
+              type="number"
+              value="0"
+              placeholder="Shipping Cost"
+            />
           </div>
           <div>
             <label>Total</label>
@@ -115,7 +140,12 @@
           </div>
           <div>
             <label>Amount Paid</label>
-            <input v-model="amountPaid" type="text" value="0" placeholder="Amount Paid" />
+            <input
+              v-model="amountPaid"
+              type="text"
+              value="0"
+              placeholder="Amount Paid"
+            />
           </div>
           <div>
             <label>Balance Due</label>
@@ -128,7 +158,7 @@
       <div class="download">
         <h3>Please proceed next step</h3>
         <button>Download</button>
-        <hr>
+        <hr />
         <label for="currency-dropdown">Currency</label>
         <select id="currency-dropdown" name="currency" v-model="currency">
           <option value="rupees">Rupees</option>
@@ -136,14 +166,12 @@
           <option value="euro">Euro</option>
         </select>
         <button>Save as draft</button>
-        <hr>
+        <hr />
       </div>
     </main>
     <FooterComponent />
   </div>
 </template>
-
-
 
 <script>
 import NavBar from "../components/navBar.vue";
@@ -186,16 +214,16 @@ export default {
     },
     formattedAmount(amount) {
       switch (this.currency) {
-        case 'rupees':
+        case "rupees":
           return `₹${amount.toFixed(2)}`;
-        case 'dollars':
+        case "dollars":
           return `$${amount.toFixed(2)}`;
-        case 'euro':
+        case "euro":
           return `€${amount.toFixed(2)}`;
         default:
           return `${amount.toFixed(2)}`;
       }
-    }
+    },
   },
   computed: {
     subtotal() {
@@ -225,16 +253,14 @@ export default {
 };
 </script>
 
-
 <style scoped>
 .download label {
   font-size: 16px;
   margin-right: 10px;
   color: black;
-  
 }
 .download hr {
-  margin-bottom:30px ;
+  margin-bottom: 30px;
 }
 
 .download select {
@@ -253,16 +279,14 @@ export default {
 
 .download option {
   padding: 10px;
-
 }
-.download button{
+.download button {
   background-color: #ef7a04;
   box-shadow: none;
   cursor: pointer;
 }
-.download button:hover{
+.download button:hover {
   background-color: #555;
-  
 }
 
 .dashboard-container {
@@ -278,13 +302,11 @@ export default {
   background-color: #6474bc;
   display: flex;
   justify-content: space-between;
-  gap:40px;
-  
+  gap: 40px;
 }
 
 /* Invoice Section Styles */
 .invoice-section {
-  
   background-color: white;
   padding: 20px;
   border-radius: 8px;
@@ -301,8 +323,6 @@ export default {
   border-radius: 8px;
   box-shadow: none;
   text-align: right;
-  
-  
 }
 .invoice-header {
   display: flex;
@@ -317,7 +337,7 @@ export default {
   padding: 20px;
   border: 2px dashed #ccc;
   background-color: #f8f8f8;
-  width: 150px;  /* Adjust size as needed */
+  width: 150px; /* Adjust size as needed */
   height: 100px; /* Adjust size as needed */
   position: relative;
   font-size: 16px;
@@ -327,7 +347,7 @@ export default {
 }
 
 .logo-placeholder input[type="file"] {
-  display: none; 
+  display: none;
   /* Hide the default file input */
 }
 
@@ -338,7 +358,6 @@ export default {
   transform: translate(-50%, -50%);
   cursor: pointer;
 }
-
 
 .invoice-number input {
   width: 50px;
@@ -403,10 +422,10 @@ export default {
 .add-item:hover {
   background-color: #555;
 }
-.discount-ship button{
+.discount-ship button {
   margin-top: 10px;
   padding: 10px 20px;
-  
+
   color: white;
   border: none;
   border-radius: 4px;
@@ -414,12 +433,9 @@ export default {
   font-size: 14px;
   box-shadow: none;
 }
-.discount-ship button:hover{
+.discount-ship button:hover {
   background-color: #555;
-
 }
-
-
 
 .additional-fields {
   margin-top: 20px;
@@ -464,7 +480,4 @@ textarea {
 .tax-input span {
   margin-left: 5px;
 }
-
-
-
 </style>
