@@ -34,7 +34,6 @@
       </div>
 
 
-
     </div>
     <p v-if="errorMessage">{{ errorMessage }}</p>
   </div>
@@ -112,6 +111,7 @@ body {
   height: auto;
   max-width: 400px;
   text-align: center;
+  background-color: #6474BC;
 
 }
 
@@ -127,6 +127,7 @@ body {
   width: 20%;
   height: auto;
   margin-right: 1rem;
+  margin-top: 2rem;
   border-radius: 20%;
 }
 
@@ -145,10 +146,11 @@ body {
 .login-container p {
   color: #717272c3;
   margin-bottom: 1.5rem;
+  font-style: bold;
 }
 
 .login-container h1 {
-  margin-bottom: 1rem;
+  margin-bottom: 2px;
   color: #070885;
 }
 

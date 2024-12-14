@@ -30,6 +30,5 @@ body {
 
 #app {
   min-height: 100vh;
-  background-color: #ecf0f1; /* Light gray for better contrast */
 }
 </style>
