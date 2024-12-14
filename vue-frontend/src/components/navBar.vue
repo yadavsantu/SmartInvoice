@@ -45,9 +45,7 @@ export default {
   right: 0;
   background-color: #c3e3fb;
   z-index: 1000;
-
 }
-
 
 .navbar {
   display: flex;
@@ -57,7 +55,6 @@ export default {
   font-size: 16px;
   height: 70px;
 }
-
 
 .logo {
   display: flex;
@@ -75,10 +72,11 @@ export default {
   margin-bottom: 30px;
   object-fit: contain;
 }
-.title{
-  margin-bottom: 28px;
 
+.title {
+  margin-bottom: 28px;
 }
+
 /* Navigation Links Section */
 .nav-links {
   list-style: none;

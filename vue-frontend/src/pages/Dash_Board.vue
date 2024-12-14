@@ -213,17 +213,19 @@ export default {
       this.items.splice(index, 1);
     },
     formattedAmount(amount) {
-      switch (this.currency) {
-        case "rupees":
-          return `₹${amount.toFixed(2)}`;
-        case "dollars":
-          return `$${amount.toFixed(2)}`;
-        case "euro":
-          return `€${amount.toFixed(2)}`;
-        default:
-          return `${amount.toFixed(2)}`;
-      }
-    },
+  const numericAmount = parseFloat(amount) || 0; // Ensure it's a number, default to 0 if not
+  switch (this.currency) {
+    case "rupees":
+      return `₹${numericAmount.toFixed(2)}`;
+    case "dollars":
+      return `$${numericAmount.toFixed(2)}`;
+    case "euro":
+      return `€${numericAmount.toFixed(2)}`;
+    default:
+      return `${numericAmount.toFixed(2)}`;
+  }
+}
+,
   },
   computed: {
     subtotal() {
@@ -241,122 +243,72 @@ export default {
     },
   },
   watch: {
-    items: {
-      handler() {
-        this.items.forEach((item) => {
-          item.amount = item.quantity * item.rate;
-        });
-      },
-      deep: true,
+  items: {
+    handler() {
+      this.items.forEach((item) => {
+        item.amount = parseFloat(item.quantity || 0) * parseFloat(item.rate || 0);
+      });
     },
+    deep: true,
   },
+},
 };
 </script>
 
 <style scoped>
-.download label {
-  font-size: 16px;
-  margin-right: 10px;
-  color: black;
-}
-.download hr {
-  margin-bottom: 30px;
-}
-
-.download select {
-  padding: 10px;
-  font-size: 16px;
-  border: 1px solid #1c1b1b;
-  border-radius: 4px;
-  background-color: #f9f9f9;
-  cursor: pointer;
-}
-
-.download select:focus {
-  border-color: #007bff;
-  outline: none;
-}
-
-.download option {
-  padding: 10px;
-}
-.download button {
-  background-color: #ef7a04;
-  box-shadow: none;
-  cursor: pointer;
-}
-.download button:hover {
-  background-color: #555;
-}
-
+/* General styles */
 .dashboard-container {
   font-family: Arial, Helvetica, sans-serif;
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  padding-top: 70px; /* Adjust for navbar height */
 }
 
 .main-content {
   flex: 2;
-  padding: 100px 20px;
+  padding: 20px;
   background-color: #6474bc;
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
-  gap: 40px;
+  gap: 20px;
 }
 
-/* Invoice Section Styles */
 .invoice-section {
   background-color: white;
   padding: 20px;
   border-radius: 8px;
   box-shadow: none;
-  max-width: 1200px;
+  width: 100%; /* Take full width initially */
+  max-width: 800px; /* For larger screens */
   margin: auto;
-  margin-left: -10px;
   font-family: Arial, sans-serif;
 }
+
 .download {
-  flex: 1; /* Adjust width as needed */
+  flex: 1;
   background-color: #eef2ff;
   padding: 20px;
   border-radius: 8px;
   box-shadow: none;
   text-align: right;
+  width: 100%; /* Full width on smaller screens */
+  max-width: 400px; /* Constrain width for larger screens */
 }
+
+/* Invoice Header Styles */
 .invoice-header {
   display: flex;
+  flex-wrap: wrap; /* Allow wrapping on smaller screens */
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
 }
 
 .logo-placeholder {
-  display: inline-block;
-  text-align: center;
-  padding: 20px;
-  border: 2px dashed #ccc;
-  background-color: #f8f8f8;
-  width: 150px; /* Adjust size as needed */
-  height: 100px; /* Adjust size as needed */
-  position: relative;
-  font-size: 16px;
-  color: #888;
-  cursor: pointer;
-  border-radius: 20px;
-}
-
-.logo-placeholder input[type="file"] {
-  display: none;
-  /* Hide the default file input */
-}
-
-.logo-placeholder label {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  cursor: pointer;
+  width: 150px; /* Fixed size */
+  height: 100px;
 }
 
 .invoice-number input {
@@ -364,29 +316,26 @@ export default {
   text-align: center;
 }
 
+/* Form Groups */
 .form-group {
   margin-bottom: 15px;
 }
 
-.double {
+.form-group.double {
   display: flex;
   gap: 20px;
+  flex-wrap: wrap; /* Allow wrapping for smaller screens */
 }
 
-.form-group label {
-  display: block;
-  font-size: 14px;
-  margin-bottom: 5px;
-  color: #555;
-}
-
-.form-group input {
+.form-group input,
+textarea {
   width: 100%;
   padding: 10px;
   border: 1px solid #ddd;
   border-radius: 4px;
 }
 
+/* Table Styling */
 .invoice-items table {
   width: 100%;
   border-collapse: collapse;
@@ -407,6 +356,7 @@ export default {
   padding: 5px;
 }
 
+/* Responsive Buttons */
 .add-item {
   margin-top: 10px;
   padding: 10px 20px;
@@ -416,53 +366,24 @@ export default {
   border-radius: 4px;
   cursor: pointer;
   font-size: 14px;
-  box-shadow: none;
 }
 
 .add-item:hover {
-  background-color: #555;
-}
-.discount-ship button {
-  margin-top: 10px;
-  padding: 10px 20px;
-
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 14px;
-  box-shadow: none;
-}
-.discount-ship button:hover {
-  background-color: #555;
+  background-color: #555; /* Updated hover color */
 }
 
-.additional-fields {
-  margin-top: 20px;
-}
-
+/* Additional Fields */
 .additional-fields .notes,
 .additional-fields .terms {
   margin-bottom: 15px;
 }
 
-textarea {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  resize: none;
-}
-
+/* Summary Section */
 .summary-section {
   margin-top: 20px;
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 10px;
-}
-
-.summary-section label {
-  font-weight: bold;
 }
 
 .summary-section input {
@@ -472,12 +393,65 @@ textarea {
   border-radius: 4px;
 }
 
-.tax-input {
-  display: flex;
-  align-items: center;
+/* Remove box shadows from all buttons */
+button, .add-item {
+  box-shadow: none;
 }
 
-.tax-input span {
-  margin-left: 5px;
+/* Hover color for all buttons */
+button:hover, .add-item:hover {
+  background-color: #555;
 }
+
+/* Responsive Design with Media Queries */
+@media (max-width: 768px) {
+  .main-content {
+    flex-direction: column;
+    padding: 10px;
+  }
+
+  .invoice-section {
+    max-width: 100%; /* Full width on smaller screens */
+  }
+
+  .download {
+    max-width: 100%;
+    text-align: center;
+  }
+
+  .invoice-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .form-group.double {
+    flex-direction: column;
+  }
+
+  .summary-section {
+    grid-template-columns: 1fr; /* Stack the summary fields */
+  }
+}
+
+@media (max-width: 480px) {
+  .logo-placeholder {
+    width: 100px; /* Adjust size for smaller screens */
+    height: 80px;
+  }
+
+  .add-item {
+    font-size: 12px;
+    padding: 8px 16px;
+  }
+
+  .download button {
+    font-size: 14px;
+    padding: 8px 12px;
+  }
+
+  .invoice-items table {
+    font-size: 14px;
+  }
+}
+
 </style>
