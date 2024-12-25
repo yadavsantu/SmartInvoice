@@ -17,6 +17,7 @@
 ---
 
 ## Project Structure
+```
 SmartInvoice/
 │
 ├── backend/
@@ -60,6 +61,7 @@ SmartInvoice/
 │   └── jsconfig.json
 │
 └── README.md
+```
 ---
 
 ## Prerequisites
