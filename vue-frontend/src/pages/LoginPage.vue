@@ -40,9 +40,8 @@
 </template>
 
 <script>
-import axios from 'axios';
+import axios from "axios";
 
-// import axios from 'axios';
 export default {
   name: "LoginPage",
   data() {
@@ -50,36 +49,75 @@ export default {
       email: "",
       password: "",
       rememberMe: false,
-      errorMessage: ""
+      errorMessage: "",
     };
   },
   methods: {
+
+    async refreshAccessToken() {
+      try {
+        const response = await axios.post(
+          "http://localhost:8080/api/v1/refresh",
+          {token: localStorage.getItem("refreshToken") },
+          { withCredentials: true }
+        );
+
+        if (response.status === 200) {
+          const { accessToken } = response.data;
+          localStorage.setItem("accessToken", accessToken);
+          axios.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
+          console.log("Access token refreshed successfully.");
+        }
+      } catch (error) {
+        console.error("Failed to refresh access token:", error.response?.data || error.message);
+        localStorage.removeItem("accessToken");
+        this.$router.push("/LoginPage");
+      }
+    },
+
     async handleLogin() {
-      const Email = this.email;
-      const Password = this.password;
-      // const RememberMe = this.rememberMe;
-      let response = ''
-      if (Password.length < 6) {
-        this.errorMessage = "Password length should be at least 6 characters";
+      if (this.password.length < 6) {
+        this.errorMessage = "Password must be at least 6 characters long.";
         return;
       }
 
       try {
-        response = await axios.post('http://localhost:8080/api/v1/login',
+        const response = await axios.post(
+          "http://localhost:8080/api/v1/login",
           {
-            email: Email,
-            password: Password
+            email: this.email,
+            password: this.password,
+            rememberMe: this.rememberMe,
+          },
+          {
+            withCredentials: true,
           }
-        )
-        if(response.status ==200)
-           alert('Login Successfull');
-          this.$router.push('/DashBoard')
-      }
-      catch (error) {
-        this.errorMessage="Login Failled Please check your credentials";
+        );
+
+        if (response.status === 200) {
+          const { accessToken, refreshToken } = response.data;
+
+          localStorage.setItem("accessToken", accessToken);
+          if (this.rememberMe && refreshToken) {
+            localStorage.setItem("refreshToken", refreshToken);
+          }
+          alert("Login Successful!");
+          this.$router.push("/dashboard");
+        }
+      } catch (error) {
+        this.errorMessage =
+          error.response?.data?.message || "Login failed. Please try again.";
+        console.error("Error:", error.response || error.message);
       }
     },
   },
+  created() {
+  if (localStorage.getItem("accessToken")) {
+    axios.defaults.headers.common["Authorization"] = `Bearer ${localStorage.getItem("accessToken")}`;
+  } else {
+    this.refreshAccessToken(); 
+  }
+},
 };
 </script>
 <style>

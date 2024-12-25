@@ -1,46 +1,35 @@
-const userModel = require("../models/usermodels");
+require("dotenv").config();
+const cookieParser = require("cookie-parser");
 const UserModel = require("../models/usermodels");
-  
-
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
 const registerUser = async (req, res) => {
-  const userModel = new UserModel(req.body);
-  
-  userModel.password = await bcrypt.hash(req.body.password, 10);
+  const newUser = new UserModel(req.body);
+  newUser.password = await bcrypt.hash(req.body.password, 10);
   try {
-    const response = await userModel.save();
+    const response = await newUser.save();
     response.password = undefined;
     return res
       .status(201)
       .json({ message: "User Registration Successful", data: response });
   } catch (err) {
-    if(err.code == 11000)
-    {
-      return res.status(409).json({message:"Email Already exist"})
+    if (err.code == 11000) {
+      return res.status(409).json({ message: "Email already exists" });
     }
-    return res.status(500).json({ message: "Error occurred", err });
+    return res.status(500).json({ message: "An error occurred", err });
   }
 };
 
 const loginUser = async (req, res) => {
   try {
-    const user = await userModel.findOne({ email: req.body.email });
+    const user = await UserModel.findOne({ email: req.body.email });
     if (!user) {
-      return res
-        .status(401)
-        .json({ message: "Invalid UserName or Password" });
+      return res.status(401).json({ message: "Invalid email or password" });
     }
-    const isPasswordequal = await bcrypt.compare(
-      req.body.password,
-      user.password
-    );
-
-    if (!isPasswordequal) {
-      return res
-        .status(401)
-        .json({ message: "Invalid UserName or Password" });
+    const isPasswordValid = await bcrypt.compare(req.body.password, user.password);
+    if (!isPasswordValid) {
+      return res.status(401).json({ message: "Invalid email or password" });
     }
 
     const tokenObj = {
@@ -48,14 +37,37 @@ const loginUser = async (req, res) => {
       fullName: user.fullName,
       email: user.email,
     };
-    const jwtToken = jwt.sign(tokenObj, process.env.SECRET, {
-      expiresIn: "24h",
+
+    const accessToken = jwt.sign(tokenObj, process.env.SECRET, {
+      expiresIn: process.env.ACCESS_TOKEN_EXPIRY,
     });
 
-    return res.status(200).json({ jwtToken, tokenObj });
+    const refreshToken = jwt.sign(tokenObj, process.env.SECRET, {
+      expiresIn: process.env.REFRESH_TOKEN_EXPIRY,
+    });
+
+    if (req.body.rememberMe) {
+      res.cookie("refreshToken", refreshToken, {
+        httpOnly: true,
+        secure: true, // Ensure this is true in production with HTTPS
+        sameSite: "strict",
+        maxAge: req.body.rememberMe ? 7 * 24 * 60 * 60 * 1000 : undefined, // 7 days if "Remember Me" is checked
+      });
+    }
+
+    return res.status(200).json({ accessToken, refreshToken, user: tokenObj });
   } catch (err) {
-    return res.status(500).json({message:"error",err});
+    return res.status(500).json({ message: "An error occurred", err });
   }
 };
 
-module.exports = { registerUser, loginUser };
+const getUsersData = async (req, res) => {
+  try {
+    const users = await UserModel.find({}, { password: 0 });
+    return res.status(200).json({ data: users });
+  } catch (error) {
+    return res.status(500).json({ message: "An error occurred", error });
+  }
+};
+
+module.exports = { registerUser, loginUser, getUsersData };
