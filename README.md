@@ -6,7 +6,7 @@
 
 ## Features
 
-- **User Authentication**: Includes login and signup pages for user access control.
+- **User Authentication**: Login and signup pages for user access control.
 - **Dashboard**: A central page for managing all invoices.
 - **Invoice Management**: Create, update, and manage invoices with itemized details.
 - **Discounts and Shipping**: Easily add discounts and shipping charges to invoices.
@@ -17,7 +17,8 @@
 ---
 
 ## Project Structure
-```
+
+```plaintext
 SmartInvoice/
 │
 ├── backend/
@@ -62,52 +63,67 @@ SmartInvoice/
 │
 └── README.md
 ```
----
-
 ## Prerequisites
-
-- **Node.js** (v14+)
-- **MongoDB** (for database)
-- **NPM** or **Yarn**
-
----
-
+	•	Node.js (v14+)
+	•	MongoDB (for database)
+	•	NPM or Yarn
 ## Installation and Setup
-
-1. **Clone the Repository**:
-   ```bash
-   git clone https://github.com/your-username/SmartInvoice.git
-   cd SmartInvoice 
-2. Set Up Backend:
+ 1.	Clone the Repository:
+    ```bash
+    git clone https://github.com/your-username/SmartInvoice.git
+    cd SmartInvoice
+2.	Set Up Backend:
 	•	Navigate to the backend folder:
-   cd backend
-  •	Install dependencies:
-   npm install
+       ```bash
+         cd backend
+       ```
+    •	Install dependencies:
+  	 ```bash
+          npm instal
+    
    •	Install nodemon globally for automatic server restarts during development:
-   npm install -g nodemon
-   •	Configure the .env file in the util folder for database connection and other environment variables.
+```bash
+npm install -g nodemon
+```        
+•	Configure the .env file in the util folder for database connection and other environment variables.
 3.	Run the Backend with Nodemon:
-	•	Start the backend server using nodemon for automatic restarts:   
-  nodemon app.js
+    •	Start the backend server:
+```bash
+          nodemon app.js
+```
 4.	Set Up Frontend:
-	•	Navigate to the vue-frontend folder:
-    cd ../vue-frontend
-  •	Install dependencies:
-    npm install
+    •	Navigate to the vue-frontend folder:
+```bash
+   cd ../vue-frontend
+```
+   •	Install dependencies:
+```bash
+npm install
+```
 5.	Run the Frontend:
-	•	Start the frontend development server:
-   npm run serve
+    •	Start the frontend development server:
+```bash
+npm run serve
+ ```
 6.	Access the Application:
-	•	Open your browser and navigate to:
-  http://localhost:8080
-
+    •	Open your browser and navigate to:
+  	  http://localhost:8080
 ## Contribution
 
 We welcome contributions! To contribute:
 	1.	Fork this repository.
-	2.	Create a new branch for your feature/bug fix.
-	3.	Commit your changes and push to your branch.
-	4.	Submit a pull request.	
+	2.	Create a new branch for your feature or bug fix:
+```bash
+          git checkout -b feature-name
+```
+ 3. Commit your changes and push to your branch:
+```bash
+git add .
+git commit -m "Description of your changes"
+git push origin feature-name
+```
+   4.	Submit a pull request.
 ## License
-
-This project is licensed under the MIT License. 
+   This project is licensed under the MIT License.
+  	
+    
