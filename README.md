@@ -5,7 +5,6 @@
 ---
 
 ## Features
-
 - **User Authentication**: Login and signup pages for user access control.
 - **Dashboard**: A central page for managing all invoices.
 - **Invoice Management**: Create, update, and manage invoices with itemized details.
