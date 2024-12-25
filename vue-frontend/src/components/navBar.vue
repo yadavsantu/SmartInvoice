@@ -18,7 +18,7 @@
           <button class="sign-up">Sign Up</button>
         </li>
         <li>
-          <button class="log-out">Log Out</button>
+          <button class="log-out" @click="handleLogout">Log Out</button>
         </li>
       </ul>
     </nav>

@@ -9,7 +9,12 @@ const app = express();
 app.use(express.json());
 const port = process.env.PORT || 8080;
 app.use(bodyParser.json());
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:8082", 
+    credentials: true, 
+  })
+);
 app.use("/api/v1", routes);
 
 app.listen(port, () => {
