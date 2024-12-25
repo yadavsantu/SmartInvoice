@@ -18,6 +18,7 @@
 
 ## Project Structure
 SmartInvoice/
+│
 ├── backend/
 │   ├── config/
 │   │   └── db.js
@@ -31,7 +32,9 @@ SmartInvoice/
 │   │   └── .env
 │   ├── package.json
 │   └── package-lock.json
+│
 ├── node_modules/
+│
 ├── vue-frontend/
 │   ├── public/
 │   │   ├── favicon.ico
@@ -55,6 +58,7 @@ SmartInvoice/
 │   ├── babel.config.js
 │   ├── vue.config.js
 │   └── jsconfig.json
+│
 └── README.md
 ---
 
