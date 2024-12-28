@@ -16,17 +16,16 @@ const router = createRouter({
 });
 router.beforeEach(async (to, from, next) => {
   console.log("Checking authentication...");
-  
   const isAuthenticated = await checkAuthStatus();
   console.log("Authentication status:", isAuthenticated);
 
   if (to.path === "/DashBoard" && !isAuthenticated) {
     console.log("Redirecting to LoginPage...");
-    return next("/LoginPage"); 
+    return next("/LoginPage");
   }
   if (to.path === "/" && isAuthenticated) {
     console.log("Redirecting to Dashboard...");
-    return next("/DashBoard");  
+    return next("/DashBoard");
   }
 
   if (to.path === "/LoginPage" && isAuthenticated) {
