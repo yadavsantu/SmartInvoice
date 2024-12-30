@@ -14,8 +14,8 @@
         
         <!-- Conditional Rendering -->
         <!-- Show "Sign In" and "Sign Up" when not logged in -->
-        <li v-if="!isLoggedIn"><button class="sign-in">Sign In</button></li>
-        <li v-if="!isLoggedIn"><button class="sign-up">Sign Up</button></li>
+        <li v-if="!isLoggedIn"><button class="sign-in" @click="handleLogin()">Sign In</button></li>
+        <li v-if="!isLoggedIn"><button class="sign-up" @click="handleSignup()">Sign Up</button></li>
         
         <!-- Show "Log Out" button only when logged in -->
         <li v-if="isLoggedIn"><button class="log-out" @click="handleLogout">Log Out</button></li>
@@ -38,10 +38,17 @@ export default {
       // Simulate log out process, then hide "Log Out" button and show "Sign In"
       this.isLoggedIn = false;
       alert("Logged out!");
+
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('refreshToken');
     },
+
     // Simulate login process (you would replace this with actual login logic)
     handleLogin() {
-      this.isLoggedIn = true;
+      this.$router.push('/LoginPage')
+    },
+    handleSignup(){
+      this.$router.push('/Signup')
     }
   },
 };
