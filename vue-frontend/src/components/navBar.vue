@@ -11,15 +11,14 @@
         <li><a href="#">Help</a></li>
         <li><a href="#">History</a></li>
         <li><a href="#">Invoicing Guide</a></li>
-        <li>
-          <button class="sign-in">Sign In</button>
-        </li>
-        <li>
-          <button class="sign-up">Sign Up</button>
-        </li>
-        <li>
-          <button class="log-out" @click="handleLogout">Log Out</button>
-        </li>
+        
+        <!-- Conditional Rendering -->
+        <!-- Show "Sign In" and "Sign Up" when not logged in -->
+        <li v-if="!isLoggedIn"><button class="sign-in" @click="handleLogin()">Sign In</button></li>
+        <li v-if="!isLoggedIn"><button class="sign-up" @click="handleSignup()">Sign Up</button></li>
+        
+        <!-- Show "Log Out" button only when logged in -->
+        <li v-if="isLoggedIn"><button class="log-out" @click="handleLogout">Log Out</button></li>
       </ul>
     </nav>
   </div>
@@ -27,7 +26,31 @@
 
 <script>
 export default {
-  name: 'NavBar',
+  name: "NavBar",
+  data() {
+    return {
+      // Assume the user is not logged in by default
+      isLoggedIn: false,
+    };
+  },
+  methods: {
+    handleLogout() {
+      // Simulate log out process, then hide "Log Out" button and show "Sign In"
+      this.isLoggedIn = false;
+      alert("Logged out!");
+
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('refreshToken');
+    },
+
+    // Simulate login process (you would replace this with actual login logic)
+    handleLogin() {
+      this.$router.push('/LoginPage')
+    },
+    handleSignup(){
+      this.$router.push('/Signup')
+    }
+  },
 };
 </script>
 
@@ -62,31 +85,24 @@ export default {
   font-weight: bold;
   color: #070885;
   gap: 10px;
-  height: 100%;
 }
 
 .logo img {
   width: 50px;
   height: auto;
   border-radius: 5px;
-  margin-bottom: 30px;
-  object-fit: contain;
 }
 
 .title {
-  margin-bottom: 28px;
+  font-size: 18px;
 }
 
-/* Navigation Links Section */
+/* Navigation Links */
 .nav-links {
   list-style: none;
   display: flex;
   align-items: center;
   gap: 20px;
-}
-
-.nav-links li {
-  margin: 0;
 }
 
 .nav-links a {
@@ -111,7 +127,6 @@ export default {
   color: white;
   border-radius: 5px;
   transition: background-color 0.3s ease, transform 0.2s ease;
-  box-shadow: none;
 }
 
 .sign-in {
@@ -134,28 +149,46 @@ button:hover {
 /* Responsive Styles */
 @media (max-width: 768px) {
   .navbar {
-    flex-direction: column;
-    align-items: flex-start;
+    flex-direction: row;
+    align-items: center;
     padding: 10px 20px;
   }
 
   .nav-links {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 10px;
-    width: 100%;
-  }
-
-  .nav-links li {
-    margin: 0;
-    width: 100%;
+    flex-direction: row;
+    gap: 15px;
   }
 
   .sign-in,
   .sign-up,
   .log-out {
-    width: 100%;
-    text-align: center;
+    width: auto;
+    font-size: 13px;
+    padding: 8px;
+  }
+}
+
+/* Hide title on smaller screens */
+@media (max-width: 480px) {
+  .title {
+    display: none; /* Hide the "Smart Invoice" text */
+  }
+
+  .sign-in,
+  .sign-up,
+  .log-out {
+    padding: 6px 12px;
+    font-size: 12px;
+    border-radius: 3px;
+  }
+
+  .nav-links {
+    gap: 10px; /* Adjust gap between buttons */
+  }
+
+  .logo {
+    justify-content: center; /* Ensure the logo is centered */
+    max-width: 120px; /* Limit the logo section's size on small screens */
   }
 }
 </style>

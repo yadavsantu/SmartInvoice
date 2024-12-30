@@ -12,10 +12,12 @@
     <div class="footer-section">
       <h4>Resources</h4>
       <ul>
-        <li><a href="#">Invoicing Guide</a></li>
         <li><a href="#">Help</a></li>
-        <li><a href="#">Sign In</a></li>
-        <li><a href="#">Sign Up</a></li>
+        <li><a href="#">History</a></li>
+        <li><a href="#">Invoicing Guide</a></li>
+        
+        <li><router-link to="/LoginPage">Sign In</router-link></li>
+        <li><router-link to="/Signup">Sign Up</router-link></li>
       </ul>
     </div>
     <div class="footer-section footer-copyright">
