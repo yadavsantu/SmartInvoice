@@ -30,7 +30,7 @@
       </form>
 
       <div class="links">
-        <a href="#">Forgot Password?</a> | <a href="#">Sign Up</a>
+        <a href="#">Forgot Password?</a> | <a href="/Signup">Sign Up</a>
       </div>
 
 
