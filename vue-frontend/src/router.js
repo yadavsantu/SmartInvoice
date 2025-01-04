@@ -2,14 +2,14 @@ import { createRouter, createWebHistory } from "vue-router";
 import SignUp from "./pages/SignUp.vue";
 import LoginPage from "./pages/LoginPage.vue";
 import Dashboard from "./pages/Dash_Board.vue";
-import MyInvoicesPage from "./pages/MyInvoicesPage.vue"; // Correct import
+import MyInvoicesPage from "./pages/LoginDashboard.vue"; 
 import checkAuthStatus from "../utills/checkTokenStatus";
 
 const routes = [
   { path: "/SignUp", component: SignUp, meta: { showNavBar: false, title: "Sign Up - Smart Invoice" } },
   { path: "/LoginPage", component: LoginPage, meta: { showNavBar: false, title: "Login - Smart Invoice" } },
-  { path: "/DashBoard", component: Dashboard, meta: { showNavBar: true, title: "Dashboard - Smart Invoice" } },
-  {path: "/MyInvoices",component: MyInvoicesPage, meta: { showNavBar: true, title: "My Invoices - Smart Invoice" }},
+  { path: "/DashBoard",  name: "DashBoard", component: Dashboard, meta: { showNavBar: true, title: "Dashboard - Smart Invoice"} },
+  {path: "/LoginDashboard",component: MyInvoicesPage, meta: { showNavBar: true, title: "My Invoices - Smart Invoice" }},
   { path: "/", component: Dashboard, meta: { showNavBar: true, title: "Smart Invoice" } },
 ];
 
