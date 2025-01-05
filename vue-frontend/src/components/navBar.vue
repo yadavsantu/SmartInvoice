@@ -9,7 +9,7 @@
 
       <ul class="nav-links">
         <li><a href="#">Help</a></li>
-        <li><a href="#">History</a></li>
+        <li v-if="isLoggedIn"><a href="#"></a> <router-link to="/MyInvoices">My Invoices</router-link></li>
         <li><a href="#">Invoicing Guide</a></li>
         
         <!-- Conditional Rendering -->
@@ -19,6 +19,7 @@
         
         <!-- Show "Log Out" button only when logged in -->
         <li v-if="isLoggedIn"><button class="log-out" @click="handleLogout">Log Out</button></li>
+        
       </ul>
     </nav>
   </div>
@@ -91,10 +92,13 @@ export default {
   width: 50px;
   height: auto;
   border-radius: 5px;
+  margin-top: -27px;
 }
 
 .title {
   font-size: 18px;
+  font-family: Arial, sans-serif;
+  margin-top: -30px;
 }
 
 /* Navigation Links */
