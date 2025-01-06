@@ -8,7 +8,7 @@
       </div>
 
       <ul class="nav-links">
-        <li><a href="#">Help</a></li>
+        <li><router-link to="/HelpPage">Help</router-link></li>
         <li v-if="isLoggedIn"><a href="#"></a> <router-link to="/MyInvoices">My Invoices</router-link></li>
         <li><a href="#">Invoicing Guide</a></li>
         
