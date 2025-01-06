@@ -22,6 +22,10 @@ const userSchema  = new Schema({
         updatedAt:{
         type:Date,
         default:null
+    },
+    otpvalidated:{
+        type:Boolean,
+        default:false,
     }
 });
 
