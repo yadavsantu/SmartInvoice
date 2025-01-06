@@ -12,7 +12,7 @@
     <div class="footer-section">
       <h4>Resources</h4>
       <ul>
-        <li><router-link to="/HelpPage">Help</router-link></li>
+        <li><a href="#">Help</a></li>
         <li><a href="#">History</a></li>
         <li><a href="#">Invoicing Guide</a></li>
         
