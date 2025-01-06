@@ -11,7 +11,7 @@ const port = process.env.PORT || 8080;
 app.use(bodyParser.json());
 app.use(
   cors({
-    origin: "http://localhost:8082", 
+    origin: ["http://localhost:8082", "http://localhost:8081"],
     credentials: true, 
   })
 );
