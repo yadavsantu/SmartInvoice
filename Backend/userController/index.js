@@ -1,7 +1,7 @@
 require("dotenv").config();
 const cookieParser = require("cookie-parser");
 const UserModel = require("../models/usermodels");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 const registerUser = async (req, res) => {
@@ -27,10 +27,17 @@ const loginUser = async (req, res) => {
     if (!user) {
       return res.status(401).json({ message: "Invalid email or password" });
     }
-    const isPasswordValid = await bcrypt.compare(req.body.password, user.password);
+    const isPasswordValid = await bcrypt.compare(
+      req.body.password,
+      user.password
+    );
     if (!isPasswordValid) {
       return res.status(401).json({ message: "Invalid email or password" });
     }
+
+    // if (!user.otpvalidated) {
+    //   return res.status(401).json({ message: "User Email is not validated " });
+    // }
 
     const tokenObj = {
       id: user._id,
