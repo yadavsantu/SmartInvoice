@@ -8,9 +8,13 @@ const {
 const generateInvoice = require("./../util/validateDashBoardInputs");
 const refreshToken = require("../userController/refresh-token");
 const validateToken = require("../util/validateToken");
+const otpGenerator = require("./../userController/otpGeneration");
+const sendMail = require("../util/mailSender");
+
 const routes = express.Router();
 routes.post("/register", validateUser, registerUser);
 routes.post("/login", validatelogin, loginUser);
 routes.post("/refresh", refreshToken);
 routes.get("/users", validateToken, getUsersData);
+routes.get("/generateOtp", otpGenerator,sendMail);
 module.exports = routes;
