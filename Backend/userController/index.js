@@ -35,9 +35,9 @@ const loginUser = async (req, res) => {
       return res.status(401).json({ message: "Invalid email or password" });
     }
 
-    // if (!user.otpvalidated) {
-    //   return res.status(401).json({ message: "User Email is not validated " });
-    // }
+    if (!user.otpvalidated) {
+      return res.status(401).json({ message: "User Email  not verified! " });
+    }
 
     const tokenObj = {
       id: user._id,

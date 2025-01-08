@@ -11,15 +11,15 @@
         <li><a href="#">Help</a></li>
         <li v-if="isLoggedIn"><a href="#"></a> <router-link to="/MyInvoices">My Invoices</router-link></li>
         <li><a href="#">Invoicing Guide</a></li>
-        
+
         <!-- Conditional Rendering -->
         <!-- Show "Sign In" and "Sign Up" when not logged in -->
-        <li v-if="!isLoggedIn"><button class="sign-in" @click="handleLogin()">Sign In</button></li>
-        <li v-if="!isLoggedIn"><button class="sign-up" @click="handleSignup()">Sign Up</button></li>
-        
+        <li v-if="isLoggedIn"><button class="sign-in" @click="handleLogin()">Sign In</button></li>
+        <li v-if="isLoggedIn"><button class="sign-up" @click="handleSignup()">Sign Up</button></li>
+
         <!-- Show "Log Out" button only when logged in -->
-        <li v-if="isLoggedIn"><button class="log-out" @click="handleLogout">Log Out</button></li>
-        
+        <li v-if="isLoggedIn"><button class="log-out" @click="handleLogout()">Log Out</button></li>
+
       </ul>
     </nav>
   </div>
@@ -31,7 +31,7 @@ export default {
   data() {
     return {
       // Assume the user is not logged in by default
-      isLoggedIn: false,
+      isLoggedIn: true,
     };
   },
   methods: {
@@ -39,16 +39,16 @@ export default {
       // Simulate log out process, then hide "Log Out" button and show "Sign In"
       this.isLoggedIn = false;
       alert("Logged out!");
-
       localStorage.removeItem('accessToken');
       localStorage.removeItem('refreshToken');
+      this.$router.push('LoginPage')
     },
 
     // Simulate login process (you would replace this with actual login logic)
     handleLogin() {
       this.$router.push('/LoginPage')
     },
-    handleSignup(){
+    handleSignup() {
       this.$router.push('/Signup')
     }
   },
@@ -175,7 +175,8 @@ button:hover {
 /* Hide title on smaller screens */
 @media (max-width: 480px) {
   .title {
-    display: none; /* Hide the "Smart Invoice" text */
+    display: none;
+    /* Hide the "Smart Invoice" text */
   }
 
   .sign-in,
@@ -187,12 +188,15 @@ button:hover {
   }
 
   .nav-links {
-    gap: 10px; /* Adjust gap between buttons */
+    gap: 10px;
+    /* Adjust gap between buttons */
   }
 
   .logo {
-    justify-content: center; /* Ensure the logo is centered */
-    max-width: 120px; /* Limit the logo section's size on small screens */
+    justify-content: center;
+    /* Ensure the logo is centered */
+    max-width: 120px;
+    /* Limit the logo section's size on small screens */
   }
 }
 </style>
