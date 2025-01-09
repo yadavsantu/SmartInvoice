@@ -217,6 +217,7 @@ export default {
         
         else
         {
+          console.log(error)
           this.errorMessage="User Registration Failled ";
         }
         
