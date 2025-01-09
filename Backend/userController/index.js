@@ -3,16 +3,25 @@ const cookieParser = require("cookie-parser");
 const UserModel = require("../models/usermodels");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const generateOtp = require("./../util/otpGeneration");
 
 const registerUser = async (req, res) => {
   const newUser = new UserModel(req.body);
   newUser.password = await bcrypt.hash(req.body.password, 10);
   try {
-    const response = await newUser.save();
+    // Save the new user to the database
+    let response = await newUser.save();
     response.password = undefined;
-    return res
-      .status(201)
-      .json({ message: "User Registration Successful", data: response });
+
+    // Generate and store OTP
+    const otpResponse = await generateOtp(newUser.email);
+    console.log(otpResponse);  // Check the OTP generation success in console
+
+    // Return the successful registration response
+    return res.status(201).json({
+      message: "User Registration Successful, OTP sent to email",
+      data: response
+    });
   } catch (err) {
     if (err.code == 11000) {
       return res.status(409).json({ message: "Email already exists" });
