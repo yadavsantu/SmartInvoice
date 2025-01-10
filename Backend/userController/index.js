@@ -9,18 +9,16 @@ const registerUser = async (req, res) => {
   const newUser = new UserModel(req.body);
   newUser.password = await bcrypt.hash(req.body.password, 10);
   try {
-    // Save the new user to the database
     let response = await newUser.save();
     response.password = undefined;
 
-    // Generate and store OTP
     const otpResponse = await generateOtp(newUser.email);
-    console.log(otpResponse);  // Check the OTP generation success in console
-
-    // Return the successful registration response
+    const signedEmail = jwt.sign({email:newUser.email}, process.env.emailDecodeSecret, {
+      expiresIn: process.env.unverifiedEmailExpiry,
+    });
     return res.status(201).json({
       message: "User Registration Successful, OTP sent to email",
-      data: response
+      signedEmail,
     });
   } catch (err) {
     if (err.code == 11000) {
