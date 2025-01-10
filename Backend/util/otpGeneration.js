@@ -22,10 +22,7 @@ const storeOtp = async (Email) => {
     });
     await newOtp.save();
     console.log("OTP generation successful",Otp);
-
-
-    await mailSender(Email, Otp); 
-
+    response =await mailSender(Email, Otp); 
     return { message: "OTP generated and sent to email" };
   } catch (error) {
     console.error("An error occurred while generating or storing OTP", error);

@@ -21,7 +21,8 @@
           <input type="password" id="UsrPsw" placeholder="Password" required="" autocomplete="off" v-model="Password">
 
           <label for="UsrCfrmPsw">Confirm Password</label>
-          <input type="password" id="UsrCfrmPsw" placeholder="Confirm Password" required="" autocomplete="off" v-model="repeat_password">
+          <input type="password" id="UsrCfrmPsw" placeholder="Confirm Password" required="" autocomplete="off"
+            v-model="repeat_password">
         </div>
         <button>Sign up</button>
       </form>
@@ -111,8 +112,9 @@ body {
   color: #6474BC;
   text-align: justify;
   font-weight: bold;
- 
+
 }
+
 label {
   margin-bottom: 10px;
 }
@@ -127,8 +129,8 @@ input {
   background: white;
   height: auto;
   padding: 10px;
-  border-radius: 10px ;
-  
+  border-radius: 10px;
+
   margin-bottom: 1rem;
 
 }
@@ -182,7 +184,7 @@ export default {
       const Email = this.Email;
       const Password = this.Password;
       const Retype_password = this.repeat_password;
-    
+
       if (Password.length < 6) {
         this.errorMessage = "Password length should be at least 6 characters"
         return;
@@ -205,27 +207,27 @@ export default {
 
         if (response.status == 201) {
           {
+            const encodedEmail = response.data.signedEmail;
+            console.log(encodedEmail)
+            localStorage.setItem("Encoded Email",encodedEmail);
             alert("User Registration SucessFull")
             this.$router.push('/LoginPage')
           }
-          
+
 
         }
       } catch (error) {
-        
+
         if (error.response && error.response.status === 409) { this.errorMessage = "Email already exist Please Use Different Email Address" }
-        
-        else
-        {
+
+        else {
           console.log(error)
-          this.errorMessage="User Registration Failled ";
+          this.errorMessage = "User Registration Failled ";
         }
-        
+
 
       }
     },
   },
 };
 </script>
-
-
