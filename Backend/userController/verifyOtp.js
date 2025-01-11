@@ -7,7 +7,7 @@ require("dotenv").config();
 
 const verifyOtp = async (req, res, next) => {
   const decodedEmail = JWT.verify(
-    req.body.email,
+    req.body.encodedEmail,
     process.env.emailDecodeSecret
   );
   console.log(decodedEmail);

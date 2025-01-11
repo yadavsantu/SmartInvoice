@@ -209,9 +209,9 @@ export default {
           {
             const encodedEmail = response.data.signedEmail;
             console.log(encodedEmail)
-            localStorage.setItem("Encoded Email",encodedEmail);
+            localStorage.setItem("encodedEmail",encodedEmail);
             alert("User Registration SucessFull")
-            this.$router.push('/LoginPage')
+            this.$router.push('/verifyOtp')
           }
 
 
