@@ -5,6 +5,8 @@ import Dashboard from "./pages/Dash_Board.vue";
 import MyInvoicesPage from "./pages/LoginDashboard.vue"; 
 import checkAuthStatus from "../utills/checkTokenStatus";
 import HelpPage from "./pages/HelpPage.vue";
+import OtpPage from "./components/OtpInput.vue"
+
 
 const routes = [
   { path: "/SignUp", component: SignUp, meta: { showNavBar: false, title: "Sign Up - Smart Invoice" } },
@@ -12,6 +14,7 @@ const routes = [
   { path: "/DashBoard",  name: "DashBoard", component: Dashboard, meta: { showNavBar: true, title: "Dashboard - Smart Invoice"} },
   {path: "/LoginDashboard",component: MyInvoicesPage, meta: { showNavBar: true, title: "My Invoices - Smart Invoice" }},
   {path: "/HelpPage",component: HelpPage, meta: { showNavBar: true, title: "Help Page- Smart Invoice" }},
+  {path: "/verifyOtp",component: OtpPage, meta: { showNavBar: false, title: "OTP- Smart Invoice" }},
   { path: "/", component: Dashboard, meta: { showNavBar: true, title: "Smart Invoice" } },
 ];
 

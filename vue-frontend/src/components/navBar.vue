@@ -4,12 +4,12 @@
       <!-- Logo Section -->
       <div class="logo">
         <img src="@/assets/smartlogo.jpg" alt="Logo" />
-        <span class="title">Smart Invoice</span>
+        <span class="title"><a href="Dashboard">Smart Invoice</a></span>
       </div>
 
       <ul class="nav-links">
-        <li><a href="#">Help</a></li>
-        <li v-if="isLoggedIn"><a href="#"></a> <router-link to="/MyInvoices">My Invoices</router-link></li>
+        <li><a href="HelpPage">Help</a></li>
+        <li v-if="isLoggedIn"><a href="LoginDashboard">My Invoices</a> </li>
         <li><a href="#">Invoicing Guide</a></li>
 
         <!-- Conditional Rendering -->

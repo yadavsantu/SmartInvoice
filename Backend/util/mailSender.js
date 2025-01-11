@@ -1,8 +1,7 @@
 const nodemailer = require("nodemailer");
 require("dotenv").config();
-const sendMail = async (email,otp) => {
+const sendMail = async (email, otp) => {
   try {
-    
     if (!email || !otp) {
       return res.status(400).json({ message: "Email or OTP is missing" });
     }
@@ -19,17 +18,16 @@ const sendMail = async (email,otp) => {
       from: '"Smart Invoice - Sandesh Prasai" <no-reply@smartinvoice.com>',
       to: email,
       subject: "Please Verify Your Email",
-      text: `Your OTP is ${otp}`,
+      text: ` <p>If You have not registred For our Services Please Ignore this Mail <p> Your OTP is ${otp}`,
     };
 
-    const response  = await transporter.sendMail(mailOptions);
+    const response = await transporter.sendMail(mailOptions);
     console.log("Mail Sended");
 
     return response;
-    
   } catch (error) {
     console.error("Error Sending Mail:", error);
-    throw new error("Failled to send Mail")
+    throw new error("Failled to send Mail");
   }
 };
 
