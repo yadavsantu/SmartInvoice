@@ -184,7 +184,7 @@ export default {
       const Email = this.Email;
       const Password = this.Password;
       const Retype_password = this.repeat_password;
-
+      this.errorMessage= ""
       if (Password.length < 6) {
         this.errorMessage = "Password length should be at least 6 characters"
         return;
