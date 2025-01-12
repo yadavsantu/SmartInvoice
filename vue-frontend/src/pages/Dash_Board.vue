@@ -269,30 +269,43 @@ export default {
       this.items.splice(index, 1);
     },
     createInvoice() {
-      this.errors = {
-        invoiceNumber: this.invoiceNumber === "" || !Number.isInteger(Number(this.invoiceNumber)) ? "Invoice Number must be an integer" : false,
-        from: this.from === "" || !/^[a-zA-Z\s]+$/.test(this.from) ? "Sender's name can only contain alphabets" : false,
-        billTo: this.billTo === "" || !/^[a-zA-Z\s]+$/.test(this.from) ? "Receiver's name can only contain alphabets" : false,
-        date: this.date === "" ? "Date is required" : false,
-        paymentTerms: this.paymentTerms === "" ? "Payment Terms are required" : false,
-        dueDate: this.dueDate === "" ? "Due Date is required" : false,
-        discount: this.discount < 0 ? "Discount cannot be negative" : false,
-        taxRate: this.taxRate < 0 ? "Tax rate cannot be negative" : false,
-        items: this.items.map((item) => ({
-          description: item.description === "" ? "Description is required" : false,
-          quantity: item.quantity === "" || item.quantity <= 0 ? "Quantity must be greater than 0" : false,
-          rate: item.rate === "" || item.rate <= 0 ? "Rate must be greater than 0" : false,
-        })),
-      };
+  // Update errors object with validation results
+  this.errors = {
+    invoiceNumber: this.invoiceNumber === "" || !Number.isInteger(Number(this.invoiceNumber)) ? "Invoice Number must be an integer" : false,
+    from: this.from === "" || !/^[a-zA-Z\s]+$/.test(this.from) ? "Sender's name can only contain alphabets" : false,
+    billTo: this.billTo === "" ? "Receiver's name is required" : false,
+    shipTo: this.shipTo === "" ? "Shipping address is required" : false,
+    date: this.date === "" ? "Date is required" : false,
+    paymentTerms: this.paymentTerms === "" ? "Payment Terms are required" : false,
+    dueDate: this.dueDate === "" ? "Due Date is required" : false,
+    discount: this.discount < 0 ? "Discount cannot be negative" : false,
+    taxRate: this.taxRate < 0 ? "Tax rate cannot be negative" : false,
+    items: this.items.map((item) => ({
+      description: item.description === "" ? "Description is required" : false,
+      quantity: item.quantity <= 0 ? "Quantity must be greater than 0" : false,
+      rate: item.rate <= 0 ? "Rate must be greater than 0" : false,
+    })),
+  };
 
-      const isValid = !Object.values(this.errors).some(error => error !== false);
-      if (isValid) {
-        console.log(isValid)
-        alert("Invoice created successfully!");
-      } else {
-        alert("Please fill all required fields!");
-      }
-    },
+  // Check for top-level errors
+  const hasTopLevelErrors = Object.values(this.errors).some(
+    (error) => error && !Array.isArray(error)
+  );
+
+  // Check for item-specific errors
+  const hasItemErrors = this.errors.items.some((itemErrors) =>
+    Object.values(itemErrors).some((error) => error)
+  );
+
+  // Final validation check
+  if (!hasTopLevelErrors && !hasItemErrors) {
+    alert("Invoice created successfully!");
+  } else {
+    alert("Please fill all required fields!");
+  }
+},
+
+
     formattedAmount(amount) {
       const numericAmount = parseFloat(amount) || 0;
       switch (this.currency) {
