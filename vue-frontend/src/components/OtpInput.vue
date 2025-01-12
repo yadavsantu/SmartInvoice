@@ -15,11 +15,11 @@ import axios from 'axios';
 export default {
   data() {
     return {
-      otp: "", // Single string for the OTP
+      otp: "",
     };
   },
   methods: {
-    handleInput() { // Removed 'event' parameter
+    handleInput() {
       this.otp = this.otp.replace(/[^0-9]/g, "").slice(0, 6); // Ensure only numbers and max 6 digits
     },
     async verifyOtp() {
@@ -35,6 +35,7 @@ export default {
             this.$router.push("LoginPage");
           }
           else {
+            alert("Invalid OTP");
             console.log("Otp Verification UnsucessFull")
           }
 
@@ -44,7 +45,7 @@ export default {
 
 
       } else {
-        alert("Please enter a 6-digit OTP.");
+        alert("Please enter a 6-digit OTP."); 
       }
     },
   },
@@ -57,16 +58,13 @@ export default {
   align-items: center;
   justify-content: center;
   width: 100vw;
-  /* Full width of the viewport */
   height: 100vh;
-  /* Full height of the viewport */
   background-color: #f9f9f9;
   padding: 20px;
   text-align: center;
   box-sizing: border-box;
-  /* Include padding in width/height calculation */
   background-color: #7b6dff;
-  /* Match the purple background from the image */
+
 }
 
 .title {
@@ -80,7 +78,6 @@ export default {
 .subtitle {
   font-size: 16px;
   color: #ddd;
-  /* Slightly lighter text for better readability */
   margin-bottom: 20px;
 }
 
