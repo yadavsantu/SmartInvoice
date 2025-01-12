@@ -6,11 +6,15 @@ const JWT = require("jsonwebtoken");
 require("dotenv").config();
 
 const verifyOtp = async (req, res, next) => {
-  const decodedEmail = JWT.verify(
-    req.body.encodedEmail,
-    process.env.emailDecodeSecret
-  );
-  console.log(decodedEmail);
+  const session = await otpModel.startSession();
+  session.startTransaction();
+
+  let decodedEmail;
+try {
+  decodedEmail = JWT.verify(req.body.encodedEmail, process.env.emailDecodeSecret);
+} catch (error) {
+  return res.status(401).json({ message: "Invalid or expired token" });
+}
 
   try {
     const ifuserExists = await userModel.findOne({ email: decodedEmail.email });
@@ -32,22 +36,28 @@ const verifyOtp = async (req, res, next) => {
     if (!isOtpMatched) return res.status(401).json({ message: "Invalid OTP" });
 
     console.log("OTP matched");
-    // ifuserExists.otpvalidated = true;
 
     const updateUserStatus = await userModel.updateOne(
       { email: decodedEmail.email },
-      { $set: { otpvalidated: true } }
+      { $set: { otpvalidated: true } },
+      {session}
     );
-    if (updateUserStatus.modifiedCount > 0)
+
+
+    if (updateUserStatus.modifiedCount > 0) {
+      await otpModel.deleteOne({ email: decodedEmail.email }, {session});
+      console.log("Otp Deleted")
+      await session.commitTransaction();
+      session.endSession();
       return res
         .status(201)
         .json({ message: "User email Validated Sucessfully " });
-    else {
+    } else {
       return res.status(401).json({ message: "Failled to Update User status" });
     }
-
-    console.log("User Status Changed");
   } catch (err) {
+    session.abortTransaction();
+    session.endSession();
     console.log(err);
   }
 };
