@@ -12,6 +12,9 @@
         <li v-if="isLoggedIn"><a href="LoginDashboard">My Invoices</a></li>
         <li><a href="#">Invoicing Guide</a></li>
 
+        <!-- Show User Name when logged in -->
+        <li v-if="isLoggedIn" class="user-name">{{ userName }}</li>
+
         <!-- Show "Sign In" and "Sign Up" when not logged in -->
         <li v-if="!isLoggedIn">
           <button class="sign-in" @click="handleLogin">Sign In</button>
@@ -29,35 +32,64 @@
   </div>
 </template>
 
-
 <script>
+import axios from "axios";
+
 export default {
   name: "NavBar",
   data() {
     return {
-      // Initialize based on localStorage (check if the user is logged in)
-      isLoggedIn: !!localStorage.getItem("accessToken"),
+      isLoggedIn: !!localStorage.getItem("accessToken"), // Check login state
+      userName: localStorage.getItem("userName") || "Guest", // Default to "Guest"
     };
   },
   methods: {
+    // Fetch user name from the backend
+    async fetchUserName() {
+      const token = localStorage.getItem("accessToken");
+      if (token) {
+        try {
+          const response = await axios.get("http://localhost:5000/api/user", {
+            headers: { Authorization: token },
+          });
+          this.userName = response.data.name; // Set user name from DB
+          localStorage.setItem("userName", this.userName); // Save to localStorage
+        } catch (error) {
+          console.error("Error fetching user data:", error);
+          this.userName = "Guest"; // Fallback to Guest if error occurs
+        }
+      }
+    },
+
     // Handle Logout
-    handleLogout() {
-      this.isLoggedIn = false; // Update the state
-      alert("Logged out!");
-      localStorage.removeItem("accessToken");
-      localStorage.removeItem("refreshToken");
-      this.$router.push("/LoginPage"); // Redirect to the login page
+    async handleLogout() {
+      try {
+        this.isLoggedIn = false; // Update the state
+        this.userName = "Guest"; // Switch to Guest
+        alert("Logged out!");
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("userName");
+        await this.$router.push("/LoginPage"); // Redirect to the login page
+      } catch (error) {
+        console.error("Error during logout:", error);
+      }
     },
 
     // Redirect to Login Page
-    handleLogin() {
-      this.$router.push("/LoginPage");
+    async handleLogin() {
+      await this.$router.push("/LoginPage");
     },
 
     // Redirect to Signup Page
-    handleSignup() {
-      this.$router.push("/Signup");
+    async handleSignup() {
+      await this.$router.push("/Signup");
     },
+  },
+  created() {
+    // Fetch user data if logged in
+    if (this.isLoggedIn) {
+      this.fetchUserName();
+    }
   },
 };
 </script>
