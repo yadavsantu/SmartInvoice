@@ -9,48 +9,55 @@
 
       <ul class="nav-links">
         <li><a href="HelpPage">Help</a></li>
-        <li v-if="isLoggedIn"><a href="LoginDashboard">My Invoices</a> </li>
+        <li v-if="isLoggedIn"><a href="LoginDashboard">My Invoices</a></li>
         <li><a href="#">Invoicing Guide</a></li>
 
-        <!-- Conditional Rendering -->
         <!-- Show "Sign In" and "Sign Up" when not logged in -->
-        <li v-if="isLoggedIn"><button class="sign-in" @click="handleLogin()">Sign In</button></li>
-        <li v-if="isLoggedIn"><button class="sign-up" @click="handleSignup()">Sign Up</button></li>
+        <li v-if="!isLoggedIn">
+          <button class="sign-in" @click="handleLogin">Sign In</button>
+        </li>
+        <li v-if="!isLoggedIn">
+          <button class="sign-up" @click="handleSignup">Sign Up</button>
+        </li>
 
         <!-- Show "Log Out" button only when logged in -->
-        <li v-if="isLoggedIn"><button class="log-out" @click="handleLogout()">Log Out</button></li>
-
+        <li v-if="isLoggedIn">
+          <button class="log-out" @click="handleLogout">Log Out</button>
+        </li>
       </ul>
     </nav>
   </div>
 </template>
+
 
 <script>
 export default {
   name: "NavBar",
   data() {
     return {
-      // Assume the user is not logged in by default
-      isLoggedIn: true,
+      // Initialize based on localStorage (check if the user is logged in)
+      isLoggedIn: !!localStorage.getItem("accessToken"),
     };
   },
   methods: {
+    // Handle Logout
     handleLogout() {
-      // Simulate log out process, then hide "Log Out" button and show "Sign In"
-      this.isLoggedIn = false;
+      this.isLoggedIn = false; // Update the state
       alert("Logged out!");
-      localStorage.removeItem('accessToken');
-      localStorage.removeItem('refreshToken');
-      this.$router.push('LoginPage')
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
+      this.$router.push("/LoginPage"); // Redirect to the login page
     },
 
-    // Simulate login process (you would replace this with actual login logic)
+    // Redirect to Login Page
     handleLogin() {
-      this.$router.push('/LoginPage')
+      this.$router.push("/LoginPage");
     },
+
+    // Redirect to Signup Page
     handleSignup() {
-      this.$router.push('/Signup')
-    }
+      this.$router.push("/Signup");
+    },
   },
 };
 </script>

@@ -12,8 +12,8 @@
     <div class="footer-section">
       <h4>Resources</h4>
       <ul>
-        <li><a href="#">Help</a></li>
-        <li><a href="#">History</a></li>
+        <li><router-link to="/HelpPage">Help</router-link></li>
+        <li><router-link to="/LoginDashboard">My Invoices</router-link></li>
         <li><a href="#">Invoicing Guide</a></li>
         
         <li><router-link to="/LoginPage">Sign In</router-link></li>
