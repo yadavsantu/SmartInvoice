@@ -14,15 +14,31 @@
           <input type="email" id="email" v-model="email" placeholder="Email" required aria-required="true" />
         </div>
 
-        <div class="form-group">
-          <label for="password" class="form-label">Password</label>
-          <input type="password" id="password" v-model="password" placeholder="Password" required
-            aria-required="true" />
-        </div>
+                
+                  <label for="password" class="form-label">Password</label>
+                  <div style="position: relative;">
+                    <input 
+                     :type="showPassword ? 'text' : 'password'" placeholder="Enter your password" v-model="password" 
+                    />
+                     <button 
+                       type="button" 
+                       @click="togglePassword" 
+                       class="eye-btn" 
+                       aria-label="Toggle Password Visibility"
+                       >
+                       <img 
+                         :src="showPassword ? eyeOpenImage : eyeClosedImage" 
+                          alt="Toggle Password Visibility" 
+                          width="15px" 
+                           height="auto" 
+                        />
+                     </button>
+                 
+                </div>
 
         <div class="check-rem">
           <label for="remember-me" class="remember-label">
-            <input type="checkbox" id="remember-me" v-model="rememberMe" class="remember-checkbox" />
+            <input type="checkbox" id="remember-me" v-model="rememberMe" class="remember-checkbox"/>
             Remember me
           </label>
         </div>
@@ -50,8 +66,16 @@ export default {
       password: "",
       rememberMe: false,
       errorMessage: "",
+      showPassword: false,
+      eyeOpenImage: require('@/assets/eye-open.png'),
+      eyeClosedImage: require('@/assets/eye-closed.png'),
     };
   },
+  methods: {
+    togglePassword() {
+      this.showPassword = !this.showPassword;
+    },
+  
   methods: {
 
     async refreshAccessToken() {
@@ -118,6 +142,7 @@ export default {
     this.refreshAccessToken(); 
   }
 },
+},
 };
 </script>
 <style>
@@ -173,10 +198,13 @@ body {
   font-size: 2rem;
   color: black;
 }
-
+.container{
+  justify-content: center;
+}
 .login-container {
   background-color: #C3E3FB;
   padding: 2rem;
+
   border-radius: 8px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
@@ -199,6 +227,7 @@ body {
 
 .form-label {
   display: block;
+  text-align: left;
   margin-bottom: 0.5rem;
   font-weight: bold;
   color: #6474BC;
@@ -213,9 +242,12 @@ form input {
   font-size: 1rem;
 }
 
+
+
 .check-rem {
   display: flex;
   align-items: center;
+  margin-top: 15px;
   margin-bottom: 1rem;
 }
 
@@ -263,4 +295,19 @@ p {
   text-align: center;
   font-size: 20px;
 }
+
+.eye-btn {
+  position: absolute;
+  top: 50%;
+  margin-left: 90%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+
+
+
 </style>
