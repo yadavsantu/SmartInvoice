@@ -10,19 +10,64 @@
         <p>Welcome to our Smart Invoice generator</p>
         <div class="name-container">
 
-          <label for="full-name">Full Name</label>
+          <label for="full-name" style="display: flex;">Full Name</label>
           <input type="text" id="full-name" placeholder="Full Name" required autocomplete="off" v-model="FullName">
 
 
           <label for="UsrEmail">Email</label>
           <input type="email" id="UsrEmail" placeholder="Email" required="" autocomplete="off" v-model="Email">
 
+          
           <label for="UsrPsw">Password</label>
-          <input type="password" id="UsrPsw" placeholder="Password" required="" autocomplete="off" v-model="Password">
+          <div style="position: relative;">
+            <input
+              :type="showPassword ? 'text' : 'password'"
+              id="UsrPsw"
+              placeholder="Password"
+              required
+              autocomplete="off"
+              v-model="Password"
+            />
+            <button
+              type="button"
+              @click="togglePassword"
+              class="eye-btn"
+              aria-label="Toggle Password Visibility"
+            >
+              <img
+                :src="showPassword ? eyeOpenImage : eyeClosedImage"
+                alt="Toggle Password Visibility"
+                 width="15px"
+                height="auto"
+              />
+            </button>
+          </div>
 
           <label for="UsrCfrmPsw">Confirm Password</label>
-          <input type="password" id="UsrCfrmPsw" placeholder="Confirm Password" required="" autocomplete="off"
-            v-model="repeat_password">
+          <div style="position: relative;">
+            <input
+              :type="showConfirmPassword ? 'text' : 'password'"
+              id="UsrCfrmPsw"
+              placeholder="Confirm Password"
+              required
+              autocomplete="off"
+              v-model="repeat_password"
+            />
+            <button
+              type="button"
+              @click="toggleConfirmPassword"
+              class="eye-btn"
+              aria-label="Toggle Confirm Password Visibility"
+            >
+              <img
+                :src="showConfirmPassword ? eyeOpenImage : eyeClosedImage"
+                alt="Toggle Confirm Password Visibility"
+                width="15px"
+                height="auto"
+              />
+            </button>
+          </div>
+        
         </div>
         <button>Sign up</button>
       </form>
@@ -45,14 +90,13 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
   font-family: sans-serif;
   box-sizing: content-box;
 }
 
 .container {
-  width: 200%;
-  height: 900px;
+  width: 100%;
+  height: fit-content;
   max-width: 400px;
   text-align: center;
   background-color: #6474BC;
@@ -105,7 +149,7 @@ body {
 }
 
 .name-container {
-  display: flex;
+  display: block;
   flex-wrap: wrap;
   margin-bottom: 0.5rem;
   font-weight: bold;
@@ -130,10 +174,28 @@ input {
   height: auto;
   padding: 10px;
   border-radius: 10px;
-
   margin-bottom: 1rem;
 
 }
+
+
+.eye-btn {
+  position:absolute;
+  justify-items: center;
+  margin-left: 90%;
+  margin-top: -16%;
+  background: none;
+  cursor: pointer;
+  width: 5px;
+
+}
+
+.eye-btn:hover {
+  background: none; 
+  border: none; 
+  box-shadow: none; 
+}
+
 
 button {
   width: 100%;
@@ -161,6 +223,24 @@ button:hover {
 #chk:checked~.signup label {
   transform: scale(.3);
 }
+@media (max-width:360px)
+{
+ .eye-btn{
+  margin-top: -18%;
+ }
+}
+
+@media (max-width:240px)
+
+{
+ .eye-btn{
+  margin-top: -31%;
+  
+ }
+ .eye-btn img {
+  width: 10px;
+ }
+}
 </style>
 
 <script>
@@ -175,8 +255,20 @@ export default {
       Password: "",
       repeat_password: "",
       errorMessage: "",
+      showPassword: false,
+      showConfirmPassword: false,
+      eyeOpenImage: require('@/assets/eye-open.png'),
+      eyeClosedImage: require('@/assets/eye-closed.png'),
+      
     };
   },
+  methods: {
+    togglePassword() {
+      this.showPassword = !this.showPassword;
+    },
+    toggleConfirmPassword() {
+      this.showConfirmPassword = !this.showConfirmPassword;
+    },
   methods: {
     async handleSignUp() {
       console.log("signUp")
@@ -229,5 +321,6 @@ export default {
       }
     },
   },
+},
 };
 </script>
