@@ -46,19 +46,18 @@ export default {
   methods: {
 
     async fetchUserName() {
-      const refreshToken = localStorage.getItem("refreshToken");
+      const accessToken = localStorage.getItem("accessToken");
 
       if (!this.isLoggedIn)
         return;
 
-      if (refreshToken) {
+      if (accessToken) {
         try {
-          console.log('Entered in try Block')
-          const response = await axios.post("http://localhost:8080/api/v1/FetchUserName", { refreshToken });
-          this.userName = response.data.fullName;
+          const response = await axios.post("http://localhost:8080/api/v1/FetchUserName", { accessToken });
+          this. userName = response.data.fullName;
         } catch (error) {
           console.error("Error fetching user data:", error);
-          this.userName = "Guest";
+          this.userName = "Guest User";
         }
       }
     },
@@ -67,7 +66,7 @@ export default {
     async handleLogout() {
       try {
         this.isLoggedIn = false; 
-        this.userName = "Guest"; 
+        this.userName = "Guest User"; 
         localStorage.removeItem("accessToken");
         localStorage.removeItem("refreshToken");
         localStorage.removeItem("userName");
@@ -89,7 +88,6 @@ export default {
     },
   },
   created() {
-    // Fetch user data if logged in
     if (this.isLoggedIn) {
       this.fetchUserName();
     }

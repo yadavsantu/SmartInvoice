@@ -12,9 +12,7 @@
         <div class="form-group">
           <label for="email" class="form-label">Email</label>
           <input type="email" id="email" v-model="email" placeholder="Email" required aria-required="true" />
-        </div>
-
-                
+        </div>                
                   <label for="password" class="form-label">Password</label>
                   <div style="position: relative;">
                     <input 
@@ -46,7 +44,7 @@
       </form>
 
       <div class="links">
-        <a href="/Reset_Password">Forgot Password?</a> | <a href="/Signup">Sign Up</a>
+        <a href="/ResetPassword">Forgot Password?</a> | <a href="/Signup">Sign Up</a>
       </div>
 
 
@@ -76,7 +74,6 @@ export default {
       this.showPassword = !this.showPassword;
     },
   
-  methods: {
 
     async refreshAccessToken() {
       try {
@@ -142,8 +139,7 @@ export default {
     this.refreshAccessToken(); 
   }
 },
-},
-};
+}
 </script>
 <style>
 body {
