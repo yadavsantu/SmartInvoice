@@ -26,6 +26,20 @@
             </div>
             <p v-if="message" class="message">{{ message }}</p>
             <div class="otp-input-wrapper">
+             <input type="text" maxlength="6" class="otp-input" v-model="otp" placeholder="******" @input="handleInput"
+              pattern="\d*" inputmode="numeric" />
+=======
+          <form @submit.prevent>
+            <div class="contain-email">
+              <label for="email">Email</label>
+              <input type="email" id="email" name="email" v-model="email" placeholder="Enter your email address"
+                required />
+            </div>
+            <div class="contain-bottom">
+              <button type="submit" class="btn" @click="verifyEmail">Send Recovery Email</button>
+            </div>
+            <p v-if="message" class="message">{{ message }}</p>
+            <div class="otp-input-wrapper">
               <input
                 type="text"
                 maxlength="6"
@@ -40,6 +54,30 @@
             <button class="verify-button" @click="verifyOtp">Verify OTP Code</button>
             <div class="reset">
               <label for="n_password">New password</label>
+
+              <div class="password-container">
+                <input :type="showNewPassword ? 'text' : 'password'" minlength="6" id="n_password" class="n_password"
+                  placeholder="Enter a new password (min. 6 characters)" v-model="newPassword" />
+                <button type="button" @click="toggleNewPassword" class="eye-btn">
+                  <img :src="showNewPassword ? eyeOpenImage : eyeClosedImage" alt="Toggle Password Visibility"
+                    width="50px" height="auto" />
+                </button>
+              </div>
+              <label for="c_password">Confirm password</label>
+              <div class="password-container">
+                <input :type="showConfirmPassword ? 'text' : 'password'" minlength="6" id="c_password"
+                  class="c_password" placeholder="Confirm password" v-model="confirmPassword" />
+                <button type="button" @click="toggleConfirmPassword" class="eye-btn">
+                  <img :src="showConfirmPassword ? eyeOpenImage : eyeClosedImage" alt="Toggle Password Visibility"
+                    width="50px" height="auto" />
+                </button>
+>>>>>>> 73a56ed (Minor changes)
+              </div>
+            <button class="verify-button" @click="verifyOtp">Verify OTP Code</button>
+            <div class="reset">
+              <label for="n_password">New password</label>
+
+<<<<<<< HEAD
               <div class="password-container">
                 <input
                   :type="showNewPassword ? 'text' : 'password'"
@@ -79,6 +117,10 @@
 <script>
 import axios from "axios";
 
+<<<<<<< HEAD
+=======
+import axios from 'axios';
+>>>>>>> 73a56ed (Minor changes)
 export default {
   data() {
     return {
@@ -133,6 +175,19 @@ export default {
   },
 };
 </script>
+
+<<<<<<< HEAD
+
+
+<style scoped>
+/* General Styles */
+.container-fluid {
+  padding: 40px 20px;
+  max-width: 400px;
+ 
+
+=======
+
 
 <style scoped>
 /* Styles are unified and responsive */
@@ -277,3 +332,6 @@ export default {
   }
 }
 </style>
+=======
+</style>
+>>>>>>> 73a56ed (Minor changes)
