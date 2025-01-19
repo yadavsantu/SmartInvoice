@@ -269,7 +269,6 @@ export default {
     toggleConfirmPassword() {
       this.showConfirmPassword = !this.showConfirmPassword;
     },
-  methods: {
     async handleSignUp() {
       console.log("signUp")
       const FullName = this.FullName;
@@ -321,6 +320,6 @@ export default {
       }
     },
   },
-},
-};
+}
+
 </script>

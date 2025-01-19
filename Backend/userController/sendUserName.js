@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const userName = async (req, res) => {
-  const refreshToken = req.body.refreshToken;
+  const refreshToken = req.body.accessToken;
   if (!refreshToken) {
     return res
       .status(400)
