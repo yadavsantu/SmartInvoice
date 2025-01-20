@@ -27,6 +27,17 @@
     margin: auto;
     font-family: Arial, sans-serif;
   }
+  .table-style {
+    border-collapse: collapse;
+    width: 100%;
+  }
+  
+  .table-style th,
+  .table-style td {
+    border: 1px solid black;
+    padding: 5px;
+    text-align: left;
+  }
   
   .download {
     flex: 1;

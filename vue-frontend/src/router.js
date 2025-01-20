@@ -9,6 +9,7 @@ import HelpPage from "./pages/HelpPage.vue";
 import OtpPage from "./components/OtpInput.vue"
 
 
+
 const routes = [
   { path: "/SignUp", component: SignUp, meta: { showNavBar: false, title: "Sign Up - Smart Invoice" } },
   { path: "/LoginPage", component: LoginPage, meta: { showNavBar: false, title: "Login - Smart Invoice" } },
@@ -18,7 +19,7 @@ const routes = [
   {path: "/HelpPage",component: HelpPage, meta: { showNavBar: true, title: "Help Page- Smart Invoice" }},
   {path: "/verifyOtp",component: OtpPage, meta: { showNavBar: false, title: "OTP- Smart Invoice" }},
   { path: "/", component: Dashboard, meta: { showNavBar: true, title: "Smart Invoice" } },
-];
+  ];
 
 const router = createRouter({
   history: createWebHistory(),
