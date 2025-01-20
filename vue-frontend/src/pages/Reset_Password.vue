@@ -23,10 +23,10 @@
             </div>
             <p v-if="message" class="message">{{ message }}</p>
             <div class="otp-input-wrapper">
-              <input type="text" maxlength="6" class="otp-input" v-model="otp" placeholder="******" @input="handleInput"
-                pattern="\d*" inputmode="numeric" />
+              <input type="number" maxlength="6" class="otp-input" v-model="otp" placeholder="******"
+                @input="handleInput" pattern="\d*" inputmode="numeric" />
             </div>
-            <button class="verify-button" @click="verifyOtp">Verify OTP Code</button>
+
             <div class="reset">
               <label for="n_password">New password</label>
 
@@ -88,9 +88,23 @@ export default {
     },
 
     async verifyEmail() {
-      const emailResponse = await axios.post('http://localhost:8080/api/v1/ResetPassword', { email: this.email })
-      if (emailResponse.status == 200) {
-        console.log("Email fonund")
+      let emailResponse = '';
+      try {
+        emailResponse = await axios.post('http://localhost:8080/api/v1/verifyEmail', { email: this.email });
+
+        if (emailResponse.status === 200) {
+          this.message = "OTP sent to email. Please check your inbox.";
+        } else {
+          this.message = "Unexpected error. Please try again.";
+        }
+      } catch (error) {
+
+        if (error.response && error.response.status === 409) {
+          this.message = "OTP already sent. Please check your inbox.";
+        } else {
+          console.error("Error during OTP request:", error);
+          this.message = error.response.data.message;
+        }
       }
     },
 
@@ -101,12 +115,18 @@ export default {
     toggleConfirmPassword() {
       this.showConfirmPassword = !this.showConfirmPassword;
     },
-    resetPassword() {
-      if (this.newPassword === this.confirmPassword) {
-        alert('Password has been reset successfully!');
-      } else {
-        alert('Passwords do not match. Please try again.');
+    async resetPassword() {
+      if (this.resetPassword != this.confirmPassword) {
+        this.message = "Both Password Don't Match";
+        return;
       }
+
+      try {
+        const response  = await axios.post("http://localhost:8080/api/v1/ResetPassword" , {email:this.email ,  otp:this.otp })
+      } catch (error) {
+        
+      }
+
     },
   },
 };

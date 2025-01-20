@@ -4,32 +4,54 @@ const otpGeneration = require("./../util/otpGeneration");
 
 const verifyResetEmail = async (req, res) => {
   const email = req.body.email;
-  const session = await userModel.startSession();
+  const session = await mongoose.startSession();
   session.startTransaction();
+
   try {
-    let response = await userModel.findOne({ email }).session(session);
+    const user = await userModel.findOne({ email }).session(session);
 
-    if (!response) return res.status(400).json({ message: "User Not found " });
+    if (!user) {
+      await session.abortTransaction();
+      return res
+        .status(400)
+        .json({ message: "User not found. Please Register" });
+    }
 
-    if (!response.otpvalidated)
+    if (!user.otpvalidated) {
+      console.log("!otpvalidated");
+      await session.abortTransaction();
       return res.status(400).json({
-        message: "User email not verified please verify your email first",
+        message: "User email not verified. Please verify your email first.",
       });
+    }
 
-    console.log("Email Found");
-    response = await otpGeneration(email, session);
-    if (!response)
-      return res.status(400).json({ message: "Failled to send OTP " });
+    const otpResponse = await otpGeneration(email, session);
+    if (!otpResponse) {
+      console.log("!otpresponse");
+      await session.abortTransaction();
+      return res.status(400).json({ message: "Failed to send OTP" });
+    }
 
-    session.commitTransaction();
-    session.endSession();
+    await session.commitTransaction();
     return res
       .status(200)
-      .json({ message: "Email Sent Please Check your Inbox" });
+      .json({ message: "Email sent. Please check your inbox." });
   } catch (error) {
-    session.abortTransaction();
-    session.endSession();
-    console.log(error);
+    console.log(error.code);
+    if (session.inTransaction()) {
+      await session.abortTransaction();
+    }
+
+    if (error.code === 251) {
+      return res
+        .status(409)
+        .json({ message: "OTP already sent. Please check your inbox." });
+    }
+
+    console.error("Error in verifyResetEmail:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  } finally {
+    session.endSession(); // Always end the session
   }
 };
 
