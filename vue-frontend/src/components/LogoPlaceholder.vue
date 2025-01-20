@@ -59,6 +59,7 @@ export default {
 
   methods: {
     handleLogoUpload(event) {
+      
       const file = event.target.files[0]
       this.error = null
 
@@ -94,6 +95,7 @@ export default {
         this.$refs.logoInput.value = ''
       }
       reader.readAsDataURL(file)
+      
     },
 
     removeLogo() {
