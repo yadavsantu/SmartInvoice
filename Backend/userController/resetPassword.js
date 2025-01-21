@@ -1,38 +1,49 @@
+const otpModel = require("./../models/otpModel");
 const userModel = require("./../models/usermodels");
-const otoModel = require("./../models/usermodels");
-const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 
 const resetPassword = async (req, res) => {
-  const email = req.body.email;
+  try {
+    const email = req.body.email;
+    const { password, otp } = req.body;
+    console.log(req.body);
 
-  if (req.body.password != req.body.repeat_password) {
-    return res.status(400).json({ message: " Both Password Don't Match" });
-  }
+    if (!email || !password || !otp) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
 
-  const password = req.body.password;
+    const otpVerify = await otpModel.findOne({ email });
+    if (!otpVerify) {
+      return res
+        .status(404)
+        .json({ message: "OTP not found for the provided email" });
+    }
 
-  const otpVerify = await otoModel.findOne({ email: email });
- 
-  const otpResponse = await bcrypt.compare(req.body.otp, otpVerify.otp);
+    const otpResponse = await bcrypt.compare(otp.toString(), otpVerify.otp);
+    if (!otpResponse) {
+      return res
+        .status(400)
+        .json({ message: "Invalid OTP, please enter the correct OTP" });
+    }
 
-  if (!otpResponse)
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const changePassword = await userModel.updateOne(
+      { email },
+      { $set: { password: hashedPassword } }
+    );
+
+    if (changePassword.modifiedCount > 0) {
+      const deleteOtp = await otpModel.deleteOne({ email });
+      return res.status(200).json({ message: "Password changed successfully" });
+    } else {
+      return res.status(400).json({ message: "Failed to update password" });
+    }
+  } catch (error) {
+    console.error(error);
     return res
-      .status(400)
-      .json({ message: " Invalid OTP Please enter correct OTP" });
-
-  const hashedPassword = await bcrypt.hash(password, 10);
-
-  const changePassword = await userModel.updateOne(
-    { email: email },
-    { $set: { password: hashedPassword } }
-  );
-
-  if (changePassword.modifiedCount > 0) {
-    return res.status(200).json({ message: "Password Changed Successfully" });
+      .status(500)
+      .json({ message: "An error occurred", error: error.message });
   }
-
-  return res.status(400).json({ message: "Faiiled to update Password" });
 };
 
 module.exports = resetPassword;

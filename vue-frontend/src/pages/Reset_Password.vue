@@ -8,31 +8,33 @@
         </div>
         <div class="content-box">
           <h2>Reset your password</h2>
-          <p>
-            "Forgot your password? No worries!"
-          </p>
+          <p>"Forgot your password? No worries!"</p>
 
           <form @submit.prevent>
             <div class="contain-email">
               <label for="email">Email</label>
               <input type="email" id="email" name="email" v-model="email" placeholder="Enter your email address"
-                required />
+                :disabled="isOtpEnabled" required />
             </div>
             <div class="contain-bottom">
-              <button type="submit" class="btn" @click="verifyEmail">Send Recovery Email</button>
+              <button type="submit" class="btn" @click="verifyEmail" :disabled="isOtpEnabled">Send Recovery
+                Email</button>
             </div>
             <p v-if="message" class="message">{{ message }}</p>
+
+            <!-- OTP Input Field -->
             <div class="otp-input-wrapper">
               <input type="number" maxlength="6" class="otp-input" v-model="otp" placeholder="******"
-                @input="handleInput" pattern="\d*" inputmode="numeric" />
+                @input="handleInput" pattern="\d*" inputmode="numeric" :disabled="!isOtpEnabled" />
             </div>
 
+            <!-- Password Reset Fields -->
             <div class="reset">
               <label for="n_password">New password</label>
-
               <div class="password-container">
                 <input :type="showNewPassword ? 'text' : 'password'" minlength="6" id="n_password" class="n_password"
-                  placeholder="Enter a new password (min. 6 characters)" v-model="newPassword" />
+                  placeholder="Enter a new password (min. 6 characters)" v-model="newPassword"
+                  :disabled="!isOtpEnabled" />
                 <button type="button" @click="toggleNewPassword" class="eye-btn">
                   <img :src="showNewPassword ? eyeOpenImage : eyeClosedImage" alt="Toggle Password Visibility"
                     width="50px" height="auto" />
@@ -41,20 +43,16 @@
               <label for="c_password">Confirm password</label>
               <div class="password-container">
                 <input :type="showConfirmPassword ? 'text' : 'password'" minlength="6" id="c_password"
-                  class="c_password" placeholder="Confirm password" v-model="confirmPassword" />
+                  class="c_password" placeholder="Confirm password" v-model="confirmPassword"
+                  :disabled="!isOtpEnabled" />
                 <button type="button" @click="toggleConfirmPassword" class="eye-btn">
                   <img :src="showConfirmPassword ? eyeOpenImage : eyeClosedImage" alt="Toggle Password Visibility"
                     width="50px" height="auto" />
                 </button>
               </div>
-
-              <button class="reset-button" @click="resetPassword">Reset Password</button>
+              <button class="reset-button" @click="resetPassword" :disabled="!isOtpEnabled">Reset Password</button>
             </div>
-
-
           </form>
-
-
         </div>
       </div>
     </div>
@@ -75,31 +73,24 @@ export default {
       showConfirmPassword: false,
       eyeOpenImage: require('@/assets/eye-open.png'),
       eyeClosedImage: require('@/assets/eye-closed.png'),
+      isOtpEnabled: false, // Initially disabled
     };
   },
   methods: {
-    handleSubmit() {
-      if (this.email) {
-        this.message = `A recovery OTP has been sent to ${this.email}. Please check your inbox.`;
-        this.email = '';
-      } else {
-        this.message = 'Please enter a valid email address.';
-      }
-    },
-
     async verifyEmail() {
-      let emailResponse = '';
       try {
-        emailResponse = await axios.post('http://localhost:8080/api/v1/verifyEmail', { email: this.email });
+        const response = await axios.post('http://localhost:8080/api/v1/verifyEmail', { email: this.email });
 
-        if (emailResponse.status === 200) {
+        if (response.status === 200) {
           this.message = "OTP sent to email. Please check your inbox.";
+          this.isOtpEnabled = true; // Enable OTP and password fields
         } else {
           this.message = "Unexpected error. Please try again.";
         }
       } catch (error) {
-
         if (error.response && error.response.status === 409) {
+          this.isOtpEnabled = true;
+
           this.message = "OTP already sent. Please check your inbox.";
         } else {
           console.error("Error during OTP request:", error);
@@ -108,7 +99,6 @@ export default {
       }
     },
 
-
     toggleNewPassword() {
       this.showNewPassword = !this.showNewPassword;
     },
@@ -116,13 +106,26 @@ export default {
       this.showConfirmPassword = !this.showConfirmPassword;
     },
     async resetPassword() {
-      if (this.resetPassword != this.confirmPassword) {
-        this.message = "Both Password Don't Match";
+      this.message = "";
+      if (this.newPassword !== this.confirmPassword) {
+        this.message = "Passwords do not match.";
         return;
       }
 
-      
-
+      try {
+        const response = await axios.post('http://localhost:8080/api/v1/ResetPassword', {
+          otp: this.otp,
+          password: this.newPassword,
+          email: this.email,
+        });
+        if (response.status === 200) {
+          alert("Password Changed Successfully");
+          this.$router.push('LoginPage');
+        }
+      } catch (error) {
+        alert("An error occurred while changing the password.");
+        console.error("Error during password reset:", error);
+      }
     },
   },
 };
