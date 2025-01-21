@@ -293,9 +293,11 @@ export default {
   margin-top: -5px;
   cursor: pointer;
   width: 10%;
+  margin-left: 0%;
 
 
 }
+
 
 .reset-button {
   margin-top: 0px;
