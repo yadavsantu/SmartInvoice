@@ -13,6 +13,7 @@ const sendMail = require("../util/mailSender");
 const verifyOtp = require("../userController/verifyOtp");
 const fetchName = require("./../userController/sendUserName");
 const emailVerification = require("./../userController/verifyResetEmail");
+const resetPassword = require("./../userController/resetPassword");
 
 const routes = express.Router();
 routes.post("/register", validateUser, registerUser);
@@ -20,7 +21,8 @@ routes.post("/login", validatelogin, loginUser);
 routes.post("/refresh", refreshToken);
 routes.post("/verifyOtp", verifyOtp);
 routes.post("/FetchUserName", fetchName);
-routes.post("/ResetPassword", emailVerification);
+routes.post("/verifyEmail", emailVerification);
+routes.post("/ResetPassword", resetPassword);
 
 routes.get("/users", validateToken, getUsersData);
 module.exports = routes;

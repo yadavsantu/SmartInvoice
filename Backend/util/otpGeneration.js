@@ -32,7 +32,7 @@ const storeOtp = async (Email, session) => {
     return { success: true, message: "OTP sent successfully" };
   } catch (error) {
     console.error("Error in storeOtp:", error.message);
-    return { success: false, message: error.message }; // Return consistent object on failure
+    return { success: false, message: error.message }; 
   }
 };
 module.exports = storeOtp;
