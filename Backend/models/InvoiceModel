@@ -1,0 +1,63 @@
+const mongoose = require("mongoose");
+const invoices = new mongoose.Schema({
+  userID: {
+    type: String,
+    required: true,
+  },
+  clientID: {
+    type: String,
+    required: true,
+  },
+  invoiceNumber: {
+    type: Number,
+    required: true,
+    unique: true,
+  },
+
+  items:[{
+        
+    description:{
+            type:String,
+            required:true,
+
+    },
+    quantity:{
+        type:Number,
+        required:true,
+
+    },
+    price:{
+        type:mongoose.Schema.Types.Decimal128,
+        required:true
+    },
+    total:{
+        type:mongoose.Schema.Types.Decimal128,
+        required:true,
+    }
+  }],
+
+  subTotal: {
+    type: mongoose.Schema.Types.Decimal128,
+    required: true,
+  },
+
+  tax: {
+    type: mongoose.Schema.Types.Decimal128,
+    required: true,
+  },
+  total: {
+    type: mongoose.Schema.Types.Decimal128,
+    required: true,
+  },
+  status: {
+    type: String,
+    required: true,
+  },
+
+  dueDate: {
+    type: Date,
+    required: true,
+  },
+});
+
+module.exports = InvoiceModel;
