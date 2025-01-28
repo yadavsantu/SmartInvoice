@@ -287,7 +287,7 @@ export default {
       }
 
       try {
-        const response = await axios.post("http://localhost:8080/api/v1/register", {
+        const response = await axios.post("http://localhst:8080/api/v1/register", {
           fullName: FullName,
           email: Email,
           password: Password,
