@@ -122,8 +122,11 @@ export default {
           alert("Password Changed Successfully");
           this.$router.push('LoginPage');
         }
+
+
       } catch (error) {
         alert("An error occurred while changing the password.");
+        this.message = error.data.message;
         console.error("Error during password reset:", error);
       }
     },

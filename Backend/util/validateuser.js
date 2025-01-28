@@ -19,7 +19,7 @@ const validateUser = (req, res, next) => {
 const validatelogin = (req, res, next) => {
   const Schema = Joi.object({
     email: Joi.string().email().required(),
-    password: Joi.string().min(6).alphanum().required(),
+    password: Joi.string().min(6).required().pattern(new RegExp('^[a-zA-Z0-9@#$%^&*]+$')),
     rememberMe: Joi.boolean(),
   });
   const { error, valuue } = Schema.validate(req.body);
