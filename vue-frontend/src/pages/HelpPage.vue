@@ -142,15 +142,35 @@
           email: "",
           message: "",
         },
+        scriptURL: "https://script.google.com/macros/s/AKfycbzHg8W-AcH_QTQdODDKdUXlZpwnfBIl6p996HwqOxuu8sw97rf30gjW1Zf8GWaakpbmZw/exec",
       };
     },
     methods: {
-      handleSubmit() {
-        alert("Thank you for reaching out! We'll get back to you shortly.");
-        this.form.name = "";
-        this.form.email = "";
-        this.form.message = "";
-      },
+      async handleSubmit() {
+      try {
+        const formData = new FormData();
+        formData.append("name", this.form.name);
+        formData.append("email", this.form.email);
+        formData.append("message", this.form.message);
+
+        const response = await fetch(this.scriptURL, {
+          method: "POST",
+          body: formData,
+        });
+
+        if (response.ok) {
+          alert("Thank you for reaching out! We'll get back to you shortly.");
+          this.form.name = "";
+          this.form.email = "";
+          this.form.message = "";
+        } else {
+          alert("Error submitting the form. Please try again.");
+        }
+      } catch (error) {
+        console.error("Submission Error:", error);
+        alert("There was an error. Please try again later.");
+      }
+    },
     },
   };
   </script>
