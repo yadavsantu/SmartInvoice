@@ -5,7 +5,6 @@ const {
   loginUser,
   getUsersData,
 } = require("../userController/index");
-const generateInvoice = require("./../util/validateDashBoardInputs");
 const refreshToken = require("../userController/refresh-token");
 const validateToken = require("../util/validateToken");
 const otpGenerator = require("./../util/otpGeneration");
@@ -14,6 +13,9 @@ const verifyOtp = require("../userController/verifyOtp");
 const fetchName = require("./../userController/sendUserName");
 const emailVerification = require("./../userController/verifyResetEmail");
 const resetPassword = require("./../userController/resetPassword");
+const validateInputs = require("./../util/validateInputs");
+const uploadFile = require("../Helper/uploadFile");
+const saveInvoice = require("./../userController/insertInvoice");
 
 const routes = express.Router();
 routes.post("/register", validateUser, registerUser);
@@ -23,6 +25,7 @@ routes.post("/verifyOtp", verifyOtp);
 routes.post("/FetchUserName", fetchName);
 routes.post("/verifyEmail", emailVerification);
 routes.post("/ResetPassword", resetPassword);
+routes.post("/sendInvoice", uploadFile, validateInputs,saveInvoice);
 
 routes.get("/users", validateToken, getUsersData);
 module.exports = routes;
