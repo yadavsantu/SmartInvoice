@@ -498,7 +498,7 @@ export default {
 
     async sendEmail() {
 
-      const accessToken = localStorage.getItem("refreshToken");
+      const accessToken = localStorage.getItem("refreshToken") || localStorage.getItem("accessToken");
 
       if (!accessToken) {
         alert("Please LogIn First");

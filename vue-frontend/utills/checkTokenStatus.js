@@ -4,14 +4,11 @@ import axios from "axios";
 async function checkAuthStatus() {
     const accessToken = localStorage.getItem('accessToken');
     const refreshToken = localStorage.getItem('refreshToken') || sessionStorage.getItem('refreshToken');
-    console.log("Access Token:", accessToken);
-    console.log("Refresh Token:", refreshToken);
 
     if(!refreshToken)
     {
         return false
     }
-
     if(!accessToken || isTokenexpired(accessToken))
     {
         try
@@ -25,7 +22,6 @@ async function checkAuthStatus() {
                 }
             )
             const newAccessToken = response.data.accessToken;
-            console.log("New AccessToken",newAccessToken)
             localStorage.setItem('accessToken' , newAccessToken)
             return  true;
         }
@@ -43,7 +39,7 @@ function isTokenexpired(token) {
         }
 
         const [, payload] = token.split('.'); 
-        const base64 = payload.replace(/-/g, '+').replace(/_/g, '/'); // Handle Base64 URL encoding
+        const base64 = payload.replace(/-/g, '+').replace(/_/g, '/');
         const decodedPayload = JSON.parse(atob(base64));
 
         if (!decodedPayload.exp) {
