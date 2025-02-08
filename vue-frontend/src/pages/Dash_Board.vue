@@ -199,7 +199,7 @@ export default {
       from: "",
       billTo: "",
       shipTo: "",
-      date: "",
+      date: new Date(Date.now()),
       paymentTerms: "",
       dueDate: "",
       notes: "",
@@ -498,6 +498,13 @@ export default {
 
     async sendEmail() {
 
+      const accessToken = localStorage.getItem("refreshToken");
+
+      if (!accessToken) {
+        alert("Please LogIn First");
+        return;
+      }
+
       const formData = new FormData();
       formData.append("invoiceNumber", this.invoiceNumber);
       formData.append("from", this.from);
@@ -522,16 +529,20 @@ export default {
         const response = await axios.post("http://localhost:8080/api/v1/sendInvoice", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
+            "Authorization": `Bearer ${accessToken}`
           }
         })
-
         if (response.status == 200) {
           alert("Invoice Saved to database");
           this.clearForm();
         }
-
       } catch (error) {
-        console.log(error)
+        if (error.response && error.response.data && error.response.data.error) {
+          const errorMessage = error.response.data.error.map(err => err.message).join(", ");
+          alert("Failed to save the invoice: " + errorMessage);
+        } else {
+          alert("An unknown error occurred: " + error.message);
+        }
 
       }
 
@@ -548,15 +559,32 @@ export default {
       this.dueDate = "";
       this.notes = "";
       this.terms = "";
-      this.taxRate = "";
-      this.discount = "";
-      this.shipping = "";
-      this.amountPaid = "";
-      this.currency = "";
-      this.total = "";
-      this.items = [];
-      this.balanceDue = "";
-      this.logoData = null;
+      this.taxRate = 0;
+      this.discount = 0;
+      this.shipping = 0;
+      this.items = [
+        {
+          description: "NA",
+          quantity: 0,
+          rate: 0,
+          amount: 0,
+        },
+      ];
+      this.errors = {
+        invoiceNumber: false,
+        from: false,
+        billTo: false,
+        date: false,
+        paymentTerms: false,
+        dueDate: false,
+        items: [],
+        discount: false,
+        taxRate: false,
+      };
+
+      // Preserve default values
+      this.currency = this.currency || "rupees";
+      this.amountPaid = this.amountPaid || 0;
     }
   },
   computed: {
