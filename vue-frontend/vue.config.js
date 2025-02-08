@@ -1,12 +1,12 @@
 module.exports = {
   devServer: {
     host: '0.0.0.0',
-    port: 8082, // or the port you're using
-    allowedHosts: 'all', // Allow connections from any host (like Ngrok URLs)
+    port: 8082, 
+    allowedHosts: 'all', 
     client: {
       webSocketURL: {
-        protocol: 'wss', // Use wss when served over HTTPS
-        hostname: '0.0.0.0',
+        protocol: 'ws', // Change to 'ws' if running without HTTPS
+        hostname: 'localhost', // Change 0.0.0.0 to localhost
         port: 8082, // Frontend port
       },
     },

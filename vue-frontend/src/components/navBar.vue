@@ -47,7 +47,6 @@ export default {
 
     async fetchUserName() {
       const accessToken = localStorage.getItem("accessToken");
-
       if (!this.isLoggedIn)
         return;
 

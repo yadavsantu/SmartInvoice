@@ -18,7 +18,7 @@ const logger = createLogger({
       format: combine(colorize(), timestamp({ format: "YYYY-MM-DD HH:mm:ss" }), consoleLogFormat),
     }),
     new transports.File({
-      filename: "app.log",
+      filename: "SmartInvoice.log",
       format: combine(timestamp({ format: "YYYY-MM-DD HH:mm:ss" }), json()), 
     }),
   ],
