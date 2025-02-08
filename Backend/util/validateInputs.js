@@ -3,8 +3,6 @@ const Joi = require("joi");
 const validateInputs = (req, res, next) => {
   try {
     console.log(req.body);
-    console.log(req.file);
-
     if (typeof req.body.items === "string") {
       req.body.items = JSON.parse(req.body.items);
     }

@@ -13,24 +13,24 @@
         <div class="content">
           <!-- Mobile view: Card layout -->
           <div class="mobile-cards" v-if="isMobileView">
-            <div v-for="(invoice, index) in invoices" :key="index" class="invoice-card">
+            <div v-for="(invoice, index) in invoices" :key="invoice._id" class="invoice-card">
               <div class="card-row">
-                <strong>Customer:</strong> {{ invoice.customer }}
+                <strong>Customer:</strong> {{ invoice.billTo }}
               </div>
               <div class="card-row">
-                <strong>Reference:</strong> {{ index + 1 }}
+                <strong>Invoice Number:</strong> {{ invoice.invoiceNumber }}
               </div>
               <div class="card-row">
-                <strong>Date:</strong> {{ invoice.date }}
+                <strong>Date:</strong> {{ formatDate(invoice.date) }}
               </div>
               <div class="card-row">
-                <strong>Due Date:</strong> {{ invoice.dueDate }}
+                <strong>Due Date:</strong> {{ formatDate(invoice.dueDate) }}
               </div>
               <div class="card-row">
                 <strong>Status:</strong> {{ invoice.status }}
               </div>
               <div class="card-row">
-                <strong>Amount:</strong> {{ formattedAmount(invoice.totalAmount) }}
+                <strong>Amount:</strong> {{ formattedAmount(invoice.total) }}
               </div>
               <div class="card-actions">
                 <button @click="viewInvoice(index)">View</button>
@@ -38,6 +38,7 @@
               </div>
             </div>
           </div>
+
 
           <!-- Desktop view: Table layout -->
           <div class="table-container" v-else>
@@ -54,22 +55,23 @@
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="(invoice, index) in invoices" :key="index">
-                  <td>{{ invoice.customer }}</td>
-                  <td>{{ index + 1 }}</td>
-                  <td>{{ invoice.date }}</td>
-                  <td>{{ invoice.dueDate }}</td>
+                <tr v-for="(invoice, index) in invoices" :key="invoice._id">
+                  <td>{{ invoice.billTo }}</td> <!-- Changed from invoice.customer -->
+                  <td>{{ invoice.invoiceNumber }}</td> <!-- Changed from index + 1 -->
+                  <td>{{ formatDate(invoice.date) }}</td>
+                  <td>{{ formatDate(invoice.dueDate) }}</td>
                   <td>{{ invoice.status }}</td>
-                  <td>{{ formattedAmount(invoice.totalAmount) }}</td>
+                  <td>{{ formattedAmount(invoice.total) }}</td>
                   <td>
                     <button @click="viewInvoice(index)">View</button>
                     <button @click="deleteInvoice(index)">Delete</button>
                   </td>
                 </tr>
               </tbody>
+
             </table>
           </div>
-          
+
           <div v-if="invoices.length === 0" class="no-history">
             <p>No invoices found.</p>
           </div>
@@ -83,6 +85,7 @@
 <script>
 import NavBar from "../components/navBar.vue";
 import FooterComponent from "../components/FooterComponent.vue";
+import axios from "axios";
 
 export default {
   name: "LoginDashboard",
@@ -98,12 +101,30 @@ export default {
     };
   },
   methods: {
-    loadInvoices() {
-      const savedInvoices = localStorage.getItem("invoiceHistory");
-      if (savedInvoices) {
-        this.invoices = JSON.parse(savedInvoices);
+    async loadInvoices() {
+      try {
+        const response = await axios.get("http://localhost:8080/api/v1/loadInvoice", {
+          headers: {
+            "Authorization": `Bearer ${localStorage.getItem("accessToken")}`
+          }
+        });
+
+        console.log(response.data); // Debugging: Check the response
+
+        if (response.data && response.data.invoices) {
+          this.invoices = response.data.invoices.map(invoice => ({
+            ...invoice,
+            date: invoice.date ? new Date(invoice.date).toISOString().split("T")[0] : "N/A",
+            dueDate: invoice.dueDate ? new Date(invoice.dueDate).toISOString().split("T")[0] : "N/A",
+          }));
+        } else {
+          console.error("Unexpected response format:", response.data);
+        }
+      } catch (error) {
+        console.error("Error loading invoices:", error);
       }
-    },
+    }
+    ,
     viewInvoice(index) {
       const selectedInvoice = this.invoices[index];
       alert(`Viewing invoice for: ${selectedInvoice.customer}`);
@@ -127,6 +148,12 @@ export default {
           return `${numericAmount.toFixed(2)}`;
       }
     },
+
+    formatDate(date) {
+    if (!date) return "N/A";
+    return new Date(date).toLocaleDateString("en-GB"); // Format: DD/MM/YYYY
+  },
+
     goToDashboard() {
       this.$router.push({ name: "DashBoard" });
     },
@@ -161,7 +188,7 @@ export default {
   width: 100%;
   margin-top: 80px;
   box-sizing: border-box;
-  
+
 }
 
 .container {
@@ -212,7 +239,8 @@ table {
   background-color: #cedfed;
 }
 
-th, td {
+th,
+td {
   padding: 10px;
   text-align: left;
 }

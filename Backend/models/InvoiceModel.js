@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const Invoices = new Schema({
+  userId: { type: Schema.Types.ObjectId, ref: "userscollections", required: true },
   invoiceNumber: { type: String, required: true },
   from: { type: String, required: true },
   billTo: { type: String, required: true },
@@ -26,7 +27,8 @@ const Invoices = new Schema({
     },
   ],
   balanceDue: { type: String, required: true },
-  logo: { type: Schema.Types.Mixed, required: true }, // Logo can be an object or binary data
+  status:{type:String, default:"Unpaid"},
+  logo: { type: Schema.Types.Mixed, required: true },
 });
 
 const invoices = mongoose.model("Invoice", Invoices);
