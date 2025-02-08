@@ -13,7 +13,7 @@
         <li><a href="#">Invoicing Guide</a></li>
 
         <!-- Show User Name when logged in -->
-        <li  class="user-name">{{ userName }}</li>
+        <li class="user-name">{{ userName }}</li>
 
         <!-- Show "Sign In" and "Sign Up" when not logged in -->
         <li v-if="!isLoggedIn">
@@ -46,14 +46,22 @@ export default {
   methods: {
 
     async fetchUserName() {
-      const accessToken = localStorage.getItem("accessToken");
+
       if (!this.isLoggedIn)
         return;
 
+      const accessToken = localStorage.getItem("accessToken");
       if (accessToken) {
+
+        if (localStorage.getItem("userName")) {
+          this.userName = localStorage.getItem("userName");
+          return
+        }
+
         try {
           const response = await axios.post("http://localhost:8080/api/v1/FetchUserName", { accessToken });
-          this. userName = response.data.fullName;
+          this.userName = response.data.fullName;
+          localStorage.setItem("userName", this.userName)
         } catch (error) {
           console.error("Error fetching user data:", error);
           this.userName = "Guest User";
@@ -64,8 +72,8 @@ export default {
     // Handle Logout
     async handleLogout() {
       try {
-        this.isLoggedIn = false; 
-        this.userName = "Guest User"; 
+        this.isLoggedIn = false;
+        this.userName = "Guest User";
         localStorage.removeItem("accessToken");
         localStorage.removeItem("refreshToken");
         localStorage.removeItem("userName");
