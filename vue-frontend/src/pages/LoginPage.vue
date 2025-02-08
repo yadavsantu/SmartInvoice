@@ -11,12 +11,12 @@
       <form @submit.prevent="handleLogin" aria-labelledby="login-form">
         <div class="form-group">
           <label for="email" class="form-label">Email</label>
-          <input type="email" id="email" v-model="email" placeholder="Email" required aria-required="true" />
+          <input type="email" id="email" v-model="email" placeholder="Email" required aria-required="true" autocomplete="off" />
         </div>                
                   <label for="password" class="form-label">Password</label>
                   <div style="position: relative;">
                     <input 
-                     :type="showPassword ? 'text' : 'password'" placeholder="Enter your password" v-model="password" 
+                     :type="showPassword ? 'text' : 'password'" placeholder="Enter your password" v-model="password" autocomplete="off"
                     />
                      <button 
                        type="button" 
