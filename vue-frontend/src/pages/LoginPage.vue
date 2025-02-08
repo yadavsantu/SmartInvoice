@@ -11,32 +11,23 @@
       <form @submit.prevent="handleLogin" aria-labelledby="login-form">
         <div class="form-group">
           <label for="email" class="form-label">Email</label>
-          <input type="email" id="email" v-model="email" placeholder="Email" required aria-required="true" autocomplete="off" />
-        </div>                
-                  <label for="password" class="form-label">Password</label>
-                  <div style="position: relative;">
-                    <input 
-                     :type="showPassword ? 'text' : 'password'" placeholder="Enter your password" v-model="password" autocomplete="off"
-                    />
-                     <button 
-                       type="button" 
-                       @click="togglePassword" 
-                       class="eye-btn" 
-                       aria-label="Toggle Password Visibility"
-                       >
-                       <img 
-                         :src="showPassword ? eyeOpenImage : eyeClosedImage" 
-                          alt="Toggle Password Visibility" 
-                          width="15px" 
-                           height="auto" 
-                        />
-                     </button>
-                 
-                </div>
+          <input type="email" id="email" v-model="email" placeholder="Email" required aria-required="true"
+            autocomplete="off" />
+        </div>
+        <label for="password" class="form-label">Password</label>
+        <div style="position: relative;">
+          <input :type="showPassword ? 'text' : 'password'" placeholder="Enter your password" v-model="password"
+            autocomplete="off" />
+          <button type="button" @click="togglePassword" class="eye-btn" aria-label="Toggle Password Visibility">
+            <img :src="showPassword ? eyeOpenImage : eyeClosedImage" alt="Toggle Password Visibility" width="15px"
+              height="auto" />
+          </button>
+
+        </div>
 
         <div class="check-rem">
           <label for="remember-me" class="remember-label">
-            <input type="checkbox" id="remember-me" v-model="rememberMe" class="remember-checkbox"/>
+            <input type="checkbox" id="remember-me" v-model="rememberMe" class="remember-checkbox" />
             Remember me
           </label>
         </div>
@@ -73,13 +64,17 @@ export default {
     togglePassword() {
       this.showPassword = !this.showPassword;
     },
-  
+
 
     async refreshAccessToken() {
+
+      if (!localStorage.getItem("refreshToken"))
+        return
+
       try {
         const response = await axios.post(
           "http://localhost:8080/api/v1/refresh",
-          {token: localStorage.getItem("refreshToken") },
+          { token: localStorage.getItem("refreshToken") },
           { withCredentials: true }
         );
 
@@ -90,7 +85,7 @@ export default {
           console.log("Access token refreshed successfully.");
         }
       } catch (error) {
-        console.error("Failed to refresh access token:", error.response?.data || error.message);
+        console.error("Failed to  access refresh token:", error.response?.data || error.message);
         localStorage.removeItem("accessToken");
         this.$router.push("/LoginPage");
       }
@@ -133,12 +128,12 @@ export default {
     },
   },
   created() {
-  if (localStorage.getItem("accessToken")) {
-    axios.defaults.headers.common["Authorization"] = `Bearer ${localStorage.getItem("accessToken")}`;
-  } else {
-    this.refreshAccessToken(); 
-  }
-},
+    if (localStorage.getItem("accessToken")) {
+      axios.defaults.headers.common["Authorization"] = `Bearer ${localStorage.getItem("accessToken")}`;
+    } else {
+      this.refreshAccessToken();
+    }
+  },
 }
 </script>
 <style>
@@ -194,9 +189,11 @@ body {
   font-size: 2rem;
   color: black;
 }
-.container{
+
+.container {
   justify-content: center;
 }
+
 .login-container {
   background-color: #C3E3FB;
   padding: 2rem;
@@ -302,8 +299,4 @@ p {
   cursor: pointer;
   padding: 0;
 }
-
-
-
-
 </style>
