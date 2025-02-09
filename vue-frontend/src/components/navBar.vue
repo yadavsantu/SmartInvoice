@@ -33,55 +33,39 @@
 </template>
 
 <script>
-import axios from "axios";
+
+import { useUserNameStore } from "@/stores/userNameStore"; 
+
 
 export default {
   name: "NavBar",
   data() {
     return {
+      userStore: useUserNameStore(),
       isLoggedIn: !!localStorage.getItem("accessToken"),
-      userName: "Guest User",
+      // userName: "Guest User",
     };
   },
+
+  computed: {
+    userName() {
+      return this.userStore.userName; // ✅ Get username reactively
+    },
+  },
+
+
   methods: {
 
-    async fetchUserName() {
-
-      if (!this.isLoggedIn)
-        return;
-
-      const accessToken = localStorage.getItem("accessToken");
-      if (accessToken) {
-
-        if (localStorage.getItem("userName")) {
-          this.userName = localStorage.getItem("userName");
-          return
-        }
-
-        try {
-          const response = await axios.post("http://localhost:8080/api/v1/FetchUserName", { accessToken });
-          this.userName = response.data.fullName;
-          localStorage.setItem("userName", this.userName)
-        } catch (error) {
-          console.error("Error fetching user data:", error);
-          this.userName = "Guest User";
-        }
-      }
-    },
+    
 
     // Handle Logout
     async handleLogout() {
-      try {
-        this.isLoggedIn = false;
-        this.userName = "Guest User";
-        localStorage.removeItem("accessToken");
-        localStorage.removeItem("refreshToken");
-        localStorage.removeItem("userName");
-        alert("Logged out!");
-        await this.$router.push("/LoginPage"); // Redirect to the login page
-      } catch (error) {
-        console.error("Error during logout:", error);
-      }
+      this.userStore.clearUserName(); // ✅ Reset username
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
+      localStorage.removeItem("userName");
+      alert("Logged out!");
+      this.$router.push("/LoginPage");
     },
 
     // Redirect to Login Page
@@ -96,7 +80,7 @@ export default {
   },
   created() {
     if (this.isLoggedIn) {
-      this.fetchUserName();
+      localStorage.setItem("userName", this.userName);
     }
   },
 };
