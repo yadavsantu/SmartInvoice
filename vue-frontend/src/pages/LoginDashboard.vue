@@ -46,7 +46,7 @@
               <thead>
                 <tr>
                   <th>Customer</th>
-                  <th>Reference</th>
+                  <th>Invoice Number</th>
                   <th>Date</th>
                   <th>Due Date</th>
                   <th>Status</th>
@@ -150,9 +150,9 @@ export default {
     },
 
     formatDate(date) {
-    if (!date) return "N/A";
-    return new Date(date).toLocaleDateString("en-GB"); // Format: DD/MM/YYYY
-  },
+      if (!date) return "N/A";
+      return new Date(date).toLocaleDateString("en-GB"); // Format: DD/MM/YYYY
+    },
 
     goToDashboard() {
       this.$router.push({ name: "DashBoard" });
@@ -245,6 +245,12 @@ td {
   text-align: left;
 }
 
+td:last-child {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
 /* Mobile Card Styles */
 .mobile-cards {
   display: flex;
@@ -269,6 +275,7 @@ td {
 
 .card-actions {
   display: flex;
+  justify-content: center;
   gap: 10px;
   margin-top: 10px;
 }

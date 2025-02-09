@@ -46,6 +46,7 @@
 
 <script>
 import axios from "axios";
+import { useUserNameStore } from "@/stores/userNameStore";
 
 export default {
   name: "LoginPage",
@@ -111,12 +112,16 @@ export default {
         );
 
         if (response.status === 200) {
-          const { accessToken, refreshToken } = response.data;
+          const { accessToken, refreshToken, user } = response.data;
+
+          const userStore = useUserNameStore(); 
+            userStore.setUserName(user.fullName); 
 
           localStorage.setItem("accessToken", accessToken);
           if (this.rememberMe && refreshToken) {
             localStorage.setItem("refreshToken", refreshToken);
           }
+
           alert("Login Successful!");
           this.$router.push("/dashboard");
         }
