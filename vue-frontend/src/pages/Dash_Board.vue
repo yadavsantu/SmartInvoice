@@ -210,7 +210,7 @@ export default {
       amountPaid: 0,
       items: [
         {
-          description: "NA",
+          description: "",
           quantity: 0,
           rate: 0,
           amount: 0,
@@ -324,174 +324,207 @@ export default {
       }
     },
     downloadInvoice() {
+  // Step 1: Perform validation checks and update errors object
+  this.errors = {
+    invoiceNumber: this.invoiceNumber === "" || !Number.isInteger(Number(this.invoiceNumber)) ? "Invoice Number must be an integer" : false,
+    from: this.from === "" || !/^[a-zA-Z\s]+$/.test(this.from) ? "Sender's name can only contain alphabets" : false,
+    billTo: this.billTo === "" ? "Receiver's name is required" : false,
+    shipTo: this.shipTo === "" ? "Shipping address is required" : false,
+    date: this.date === "" ? "Date is required" : false,
+    paymentTerms: this.paymentTerms === "" ? "Payment Terms are required" : false,
+    dueDate: this.dueDate === "" ? "Due Date is required" : false,
+    discount: this.discount < 0 ? "Discount cannot be negative" : false,
+    taxRate: this.taxRate < 0 ? "Tax rate cannot be negative" : false,
+    items: this.items.map((item) => ({
+      description: item.description === "" ? "Description is required" : false,
+      quantity: item.quantity <= 0 ? "Quantity must be greater than 0" : false,
+      rate: item.rate <= 0 ? "Rate must be greater than 0" : false,
+    })),
+  };
+
+  // Step 2: Check for top-level errors (general fields)
+  const hasTopLevelErrors = Object.values(this.errors).some(
+    (error) => error && !Array.isArray(error)
+  );
+
+  // Step 3: Check for item-specific errors
+  const hasItemErrors = this.errors.items.some((itemErrors) =>
+    Object.values(itemErrors).some((error) => error)
+  );
+
+  // Step 4: If there are any errors, stop the PDF generation and alert the user
+  if (hasTopLevelErrors || hasItemErrors) {
+    alert("Please fill all required fields!");
+    return; // Stop execution if validation fails
+  }
+
+  // Step 5: PDF generation if no errors
+  try {
+    const doc = new jsPDF();
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const pageHeight = doc.internal.pageSize.getHeight();
+    const margin = 20;
+    let yPosition = margin;
+
+    // Add header logo
+    if (this.logoData && this.logoData.base64) {
       try {
-
-        const doc = new jsPDF();
-        const pageWidth = doc.internal.pageSize.getWidth();
-        const pageHeight = doc.internal.pageSize.getHeight();
-        const margin = 20;
-        let yPosition = margin;
-
-        // Add header logo
-        if (this.logoData && this.logoData.base64) {
-          try {
-            doc.addImage(
-              this.logoData.base64,
-              'JPEG',
-              margin,
-              yPosition,
-              40,
-              40,
-              undefined,
-              'FAST'
-            );
-          } catch (logoError) {
-            console.warn('Logo could not be added:', logoError);
-          }
-        }
-
-        // Header Section
-        doc.setFont("helvetica", "bold");
-        doc.setFontSize(24);
-        doc.text('INVOICE', pageWidth / 2, margin + 10, { align: 'center' });
-
-        // setting font size and font type
-        doc.setFontSize(10);
-        doc.setFont("helvetica", "normal");
-
-
-        // Invoice Details
-        yPosition = margin + 20;
-        doc.text(`Invoice Number: ${this.invoiceNumber}`, pageWidth - 80, yPosition);
-        doc.text(`Date: ${this.date}`, pageWidth - 80, yPosition + 10);
-        doc.text(`Due Date: ${this.dueDate}`, pageWidth - 80, yPosition + 20);
-
-        // From Section
-        yPosition = 90;
-        doc.setFontSize(12);
-        doc.text('From:', margin, yPosition);
-        doc.setFontSize(10);
-        doc.text(this.from || 'N/A', margin, yPosition + 10);
-
-        // Bill To & Ship To
-        yPosition = 120;
-        doc.setFontSize(12);
-        doc.text('Bill To:', margin, yPosition);
-        doc.text('Ship To:', pageWidth / 2, yPosition);
-
-        doc.setFontSize(10);
-        doc.text(this.billTo || 'N/A', margin, yPosition + 10);
-        doc.text(this.shipTo || 'N/A', pageWidth / 2, yPosition + 10);
-
-        // Table Section
-        yPosition = 150;
-        const tableTop = yPosition;
-        const columns = ['Description', 'Quantity', 'Rate', 'Amount'];
-        const columnWidths = [80, 30, 30, 30];
-        const startX = margin;
-        const rowHeight = 10;
-
-        // Draw Table Header
-        doc.setFillColor(70, 78, 95);
-        doc.setTextColor(255);
-        doc.rect(startX, tableTop, pageWidth - margin * 2, rowHeight, 'F');
-        let xPos = startX;
-        columns.forEach((col) => {
-          doc.text(col, xPos + 2, tableTop + 7);
-          xPos += columnWidths[columns.indexOf(col)];
-        });
-
-        // Draw Table Rows with Alternate Shading
-        doc.setTextColor(0);
-        yPosition = tableTop + rowHeight;
-
-        this.items.forEach((item, index) => {
-          xPos = startX;
-          const isEven = index % 2 === 0;
-          if (isEven) doc.setFillColor(240); // Light gray
-          else doc.setFillColor(255); // White
-          doc.rect(startX, yPosition, pageWidth - margin * 2, rowHeight, 'F');
-
-          columns.forEach((_, colIndex) => {
-            doc.rect(xPos, yPosition, columnWidths[colIndex], rowHeight);
-            xPos += columnWidths[colIndex];
-          });
-
-          xPos = startX;
-          doc.text(item.description || '', xPos + 2, yPosition + 7);
-          xPos += columnWidths[0];
-
-          doc.text(item.quantity?.toString() || '0', xPos + 2, yPosition + 7);
-          xPos += columnWidths[1];
-
-          doc.text(this.formattedAmount(item.rate || 0), xPos + 2, yPosition + 7);
-          xPos += columnWidths[2];
-
-          doc.text(this.formattedAmount(item.amount || 0), xPos + 2, yPosition + 7);
-
-          yPosition += rowHeight;
-        });
-
-        // Summary Section
-        yPosition += 20;
-        const summaryXRight = pageWidth - margin;
-        let summaryY = yPosition;
-
-        const addSummaryLineRight = (label, value) => {
-          const labelWidth = doc.getTextWidth(label);
-          const valueWidth = doc.getTextWidth(value);
-          doc.text(label, summaryXRight - labelWidth - 50, summaryY);
-          doc.text(value, summaryXRight - valueWidth, summaryY);
-          summaryY += 8;
-        };
-
-        doc.setFontSize(10);
-        addSummaryLineRight('Subtotal:', this.formattedAmount(this.subtotal || 0));
-        addSummaryLineRight('Tax:', `${this.taxRate || 0}%`);
-        addSummaryLineRight('Discount:', this.formattedAmount(this.discount || 0));
-        addSummaryLineRight('Shipping:', this.formattedAmount(this.shipping || 0));
-        doc.setFontSize(11);
-        addSummaryLineRight('Total:', this.formattedAmount(this.total || 0));
-        addSummaryLineRight('Amount Paid:', this.formattedAmount(this.amountPaid || 0));
-        doc.setFontSize(12);
-        addSummaryLineRight('Balance Due:', this.formattedAmount(this.balanceDue || 0));
-
-        // Notes and Terms Section
-        summaryY = yPosition;
-        if (this.notes) {
-          doc.setFontSize(11);
-          const splitNotes = doc.splitTextToSize(this.notes, pageWidth - margin * 2);
-          doc.text('Notes:', margin, summaryY);
-          doc.text(splitNotes, margin, summaryY + 10);
-          summaryY += splitNotes.length * 5 + 10;
-        }
-
-        if (this.terms) {
-          doc.setFontSize(11);
-          const splitTerms = doc.splitTextToSize(this.terms, pageWidth - margin * 2);
-          doc.text('Terms & Conditions:', margin, summaryY);
-          doc.text(splitTerms, margin, summaryY + 10);
-        }
-
-        // Footer Section
-        const footerY = pageHeight - 20; // Fixed position at bottom
-        doc.setFontSize(10);
-        doc.text("Contact Us: Smart Invoice Company Ltd.", margin, footerY - 5);
-        doc.setFontSize(9);
-        doc.text("Phone: +977-123456789 | Email: smartinvoicepvtltd@gmail.com", margin, footerY + 3);
-        doc.text("Location: Kathmandu, Nepal", margin, footerY + 11);
-        doc.line(margin, footerY - 10, pageWidth - margin, footerY - 10); // Footer line
-
-        // Save PDF
-        const fileName = `Invoice-${this.invoiceNumber || 'draft'}.pdf`;
-        doc.save(fileName);
-        alert('PDF generated successfully!');
-
-      } catch (error) {
-        console.error('PDF Generation Error:', error);
-        alert(`Error generating PDF: ${error.message}`);
+        doc.addImage(
+          this.logoData.base64,
+          'JPEG',
+          margin,
+          yPosition,
+          40,
+          40,
+          undefined,
+          'FAST'
+        );
+      } catch (logoError) {
+        console.warn('Logo could not be added:', logoError);
       }
     }
+
+    // Header Section
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(24);
+    doc.text('INVOICE', pageWidth / 2, margin + 10, { align: 'center' });
+
+    // setting font size and font type
+    doc.setFontSize(10);
+    doc.setFont("helvetica", "normal");
+
+    // Invoice Details
+    yPosition = margin + 20;
+    doc.text(`Invoice Number: ${this.invoiceNumber}`, pageWidth - 80, yPosition);
+    doc.text(`Date: ${this.date}`, pageWidth - 80, yPosition + 10);
+    doc.text(`Due Date: ${this.dueDate}`, pageWidth - 80, yPosition + 20);
+
+    // From Section
+    yPosition = 90;
+    doc.setFontSize(12);
+    doc.text('From:', margin, yPosition);
+    doc.setFontSize(10);
+    doc.text(this.from || 'N/A', margin, yPosition + 10);
+
+    // Bill To & Ship To
+    yPosition = 120;
+    doc.setFontSize(12);
+    doc.text('Bill To:', margin, yPosition);
+    doc.text('Ship To:', pageWidth / 2, yPosition);
+
+    doc.setFontSize(10);
+    doc.text(this.billTo || 'N/A', margin, yPosition + 10);
+    doc.text(this.shipTo || 'N/A', pageWidth / 2, yPosition + 10);
+
+    // Table Section
+    yPosition = 150;
+    const tableTop = yPosition;
+    const columns = ['Description', 'Quantity', 'Rate', 'Amount'];
+    const columnWidths = [80, 30, 30, 30];
+    const startX = margin;
+    const rowHeight = 10;
+
+    // Draw Table Header
+    doc.setFillColor(70, 78, 95);
+    doc.setTextColor(255);
+    doc.rect(startX, tableTop, pageWidth - margin * 2, rowHeight, 'F');
+    let xPos = startX;
+    columns.forEach((col) => {
+      doc.text(col, xPos + 2, tableTop + 7);
+      xPos += columnWidths[columns.indexOf(col)];
+    });
+
+    // Draw Table Rows with Alternate Shading
+    doc.setTextColor(0);
+    yPosition = tableTop + rowHeight;
+
+    this.items.forEach((item, index) => {
+      xPos = startX;
+      const isEven = index % 2 === 0;
+      if (isEven) doc.setFillColor(240); // Light gray
+      else doc.setFillColor(255); // White
+      doc.rect(startX, yPosition, pageWidth - margin * 2, rowHeight, 'F');
+
+      columns.forEach((_, colIndex) => {
+        doc.rect(xPos, yPosition, columnWidths[colIndex], rowHeight);
+        xPos += columnWidths[colIndex];
+      });
+
+      xPos = startX;
+      doc.text(item.description || '', xPos + 2, yPosition + 7);
+      xPos += columnWidths[0];
+
+      doc.text(item.quantity?.toString() || '0', xPos + 2, yPosition + 7);
+      xPos += columnWidths[1];
+
+      doc.text(this.formattedAmount(item.rate || 0), xPos + 2, yPosition + 7);
+      xPos += columnWidths[2];
+
+      doc.text(this.formattedAmount(item.amount || 0), xPos + 2, yPosition + 7);
+
+      yPosition += rowHeight;
+    });
+
+    // Summary Section
+    yPosition += 20;
+    const summaryXRight = pageWidth - margin;
+    let summaryY = yPosition;
+
+    const addSummaryLineRight = (label, value) => {
+      const labelWidth = doc.getTextWidth(label);
+      const valueWidth = doc.getTextWidth(value);
+      doc.text(label, summaryXRight - labelWidth - 50, summaryY);
+      doc.text(value, summaryXRight - valueWidth, summaryY);
+      summaryY += 8;
+    };
+
+    doc.setFontSize(10);
+    addSummaryLineRight('Subtotal:', this.formattedAmount(this.subtotal || 0));
+    addSummaryLineRight('Tax:', `${this.taxRate || 0}%`);
+    addSummaryLineRight('Discount:', this.formattedAmount(this.discount || 0));
+    addSummaryLineRight('Shipping:', this.formattedAmount(this.shipping || 0));
+    doc.setFontSize(11);
+    addSummaryLineRight('Total:', this.formattedAmount(this.total || 0));
+    addSummaryLineRight('Amount Paid:', this.formattedAmount(this.amountPaid || 0));
+    doc.setFontSize(12);
+    addSummaryLineRight('Balance Due:', this.formattedAmount(this.balanceDue || 0));
+
+    // Notes and Terms Section
+    summaryY = yPosition;
+    if (this.notes) {
+      doc.setFontSize(11);
+      const splitNotes = doc.splitTextToSize(this.notes, pageWidth - margin * 2);
+      doc.text('Notes:', margin, summaryY);
+      doc.text(splitNotes, margin, summaryY + 10);
+      summaryY += splitNotes.length * 5 + 10;
+    }
+
+    if (this.terms) {
+      doc.setFontSize(11);
+      const splitTerms = doc.splitTextToSize(this.terms, pageWidth - margin * 2);
+      doc.text('Terms & Conditions:', margin, summaryY);
+      doc.text(splitTerms, margin, summaryY + 10);
+    }
+
+    // Footer Section
+    const footerY = pageHeight - 20; // Fixed position at bottom
+    doc.setFontSize(10);
+    doc.text("Contact Us: Smart Invoice Company Ltd.", margin, footerY - 5);
+    doc.setFontSize(9);
+    doc.text("Phone: +977-123456789 | Email: smartinvoicepvtltd@gmail.com", margin, footerY + 3);
+    doc.text("Location: Kathmandu, Nepal", margin, footerY + 11);
+    doc.line(margin, footerY - 10, pageWidth - margin, footerY - 10); // Footer line
+
+    // Save PDF
+    const fileName = `Invoice-${this.invoiceNumber || 'draft'}.pdf`;
+    doc.save(fileName);
+    alert('PDF generated successfully!');
+
+  } catch (error) {
+    console.error('PDF Generation Error:', error);
+    alert(`Error generating PDF: ${error.message}`);
+  }
+}
 
 
     ,
