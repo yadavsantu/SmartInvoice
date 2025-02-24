@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
 
 const validateToken = (req, res, next) => {
+
   if (!req.headers["authorization"]) {
     return res.status(403).json({ message: "Token is required" });
   }
@@ -12,7 +13,7 @@ const validateToken = (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, process.env.SECRET);
-    return next();
+     next();
   } catch (err) {
     return res.status(403).json({ message: "Invalid or expired token" });
   }

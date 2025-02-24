@@ -9,6 +9,8 @@
           <button class="new-invoice" @click="goToDashboard">New Invoice</button>
         </div>
 
+
+
         <!-- Content Section -->
         <div class="content">
           <!-- Mobile view: Card layout -->
@@ -33,8 +35,8 @@
                 <strong>Amount:</strong> {{ formattedAmount(invoice.total) }}
               </div>
               <div class="card-actions">
-                <button @click="viewInvoice(index)">View</button>
-                <button @click="deleteInvoice(index)">Delete</button>
+                <button @click="updateInvoice(index)">Update</button>
+                <button @click="downloadInvoice(index)">Download</button>
               </div>
             </div>
           </div>
@@ -56,15 +58,15 @@
               </thead>
               <tbody>
                 <tr v-for="(invoice, index) in invoices" :key="invoice._id">
-                  <td>{{ invoice.billTo }}</td> <!-- Changed from invoice.customer -->
-                  <td>{{ invoice.invoiceNumber }}</td> <!-- Changed from index + 1 -->
+                  <td>{{ invoice.billTo }}</td>
+                  <td>{{ invoice.invoiceNumber }}</td>
                   <td>{{ formatDate(invoice.date) }}</td>
                   <td>{{ formatDate(invoice.dueDate) }}</td>
                   <td>{{ invoice.status }}</td>
                   <td>{{ formattedAmount(invoice.total) }}</td>
                   <td>
-                    <button @click="viewInvoice(index)">View</button>
-                    <button @click="deleteInvoice(index)">Delete</button>
+                    <button @click="updateInvoice(index)">Update</button>
+                    <button @click="downloadInvoice(index)">Download</button>
                   </td>
                 </tr>
               </tbody>
@@ -103,13 +105,12 @@ export default {
   methods: {
     async loadInvoices() {
       try {
+        const accessToken = localStorage.getItem("refreshToken") || localStorage.getItem("accessToken");
         const response = await axios.get("http://localhost:8080/api/v1/loadInvoice", {
           headers: {
-            "Authorization": `Bearer ${localStorage.getItem("accessToken")}`
+            "Authorization": `Bearer ${accessToken}`
           }
         });
-
-        console.log(response.data); // Debugging: Check the response
 
         if (response.data && response.data.invoices) {
           this.invoices = response.data.invoices.map(invoice => ({
@@ -125,11 +126,65 @@ export default {
       }
     }
     ,
-    viewInvoice(index) {
+    async updateInvoice(index) {
       const selectedInvoice = this.invoices[index];
-      alert(`Viewing invoice for: ${selectedInvoice.customer}`);
+
+      if (!selectedInvoice || !selectedInvoice.invoiceNumber) {
+        alert("Invalid invoice selection");
+        return;
+      }
+
+      if (selectedInvoice.status === "Paid") {
+        alert("Invoice is already paid");
+        return;
+      }
+
+     
+      if (!confirm(`Are you sure you want to update the status for invoice no ${selectedInvoice.invoiceNumber}?`)) {
+        return;
+      }
+
+      try {
+        const invoiceId = selectedInvoice._id;
+        const accessToken = localStorage.getItem("refreshToken") || localStorage.getItem("accessToken");
+
+        if (!accessToken) {
+          alert("User is not authenticated. Please log in.");
+          return;
+        }
+
+        const response = await axios.put(
+          `http://localhost:8080/api/v1/updateInvoice/${invoiceId}`,
+          {},
+          { headers: { Authorization: `Bearer ${accessToken}` } }
+        );
+
+        if (response.status === 200) {
+          alert("Invoice status successfully updated!");
+          await this.loadInvoices(); // Refresh invoice list
+        }
+      } catch (error) {
+        console.error("Error updating invoice:", error);
+        if (error.response) {
+          if (error.response.status === 400) {
+            alert("Invalid Invoice ID. Please check again.");
+          } else if (error.response.status === 403) {
+            alert("Authentication failed. Please log in again.");
+          } else if (error.response.status === 500) {
+            alert("Server error. Please try again later.");
+          } else {
+            alert(`Error: ${error.response.data.message || "Failed to update invoice"}`);
+          }
+        } else if (error.request) {
+          alert("No response from server. Please check your internet connection.");
+        } else {
+          alert("Unexpected error occurred. Please try again.");
+        }
+      }
     },
-    deleteInvoice(index) {
+
+
+    downloadInvoice(index) {
       if (confirm("Are you sure you want to delete this invoice?")) {
         this.invoices.splice(index, 1);
         localStorage.setItem("invoiceHistory", JSON.stringify(this.invoices));
