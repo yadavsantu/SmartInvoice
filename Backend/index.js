@@ -7,6 +7,8 @@ const routes = require("./routes");
 const cors = require("cors");
 require("dotenv").config();
 require("./config/db");
+require("./scheduler");
+
 const app = express();
 
 app.use(express.json());
