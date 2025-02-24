@@ -1,12 +1,10 @@
 const mongoose = require('mongoose');
-const url = process.env.MONGO_URL
+const invoices = require('../models/InvoiceModel');  
 
-mongoose.connect(url)
-    .then(()=>
-    {
-        console.log(`MongoDB connected`)
-    }).catch((err)=>
-    {
-        console.log(`Error while creating MongoDB connection`,err)
+mongoose.connect(process.env.MONGO_URL)
+    .then(() => {
+        console.log('MongoDB connected');
+        return invoices.syncIndexes();  
     })
-
+    .then(() => console.log('Indexes synchronized'))
+    .catch(err => console.error('Error:', err));

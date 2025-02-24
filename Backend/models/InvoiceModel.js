@@ -31,6 +31,9 @@ const Invoices = new Schema({
   logo: { type: Schema.Types.Mixed, required: true },
 });
 
+Invoices.index({ userId: 1, invoiceNumber: 1 }, { unique: true });
+
+
 const invoices = mongoose.model("Invoice", Invoices);
 
 module.exports = invoices;
