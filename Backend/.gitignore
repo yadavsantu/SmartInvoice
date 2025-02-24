@@ -1,3 +1,4 @@
 # Ignore log files
 *.log
 logs/
+node_modules/
