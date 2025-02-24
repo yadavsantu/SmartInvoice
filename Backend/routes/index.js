@@ -15,7 +15,9 @@ const resetPassword = require("./../userController/resetPassword");
 const validateInputs = require("./../util/validateInputs");
 const uploadFile = require("../Helper/uploadFile");
 const saveInvoice = require("./../userController/insertInvoice");
-const loadInvoice = require('./../userController/loadInvoices')
+const loadInvoice = require("./../userController/loadInvoices");
+const updateInvoiceHelper = require("../util/updateInvoiceHelper");
+const updateInvoice = require("../userController/updateInvoiceStatus");
 
 const routes = express.Router();
 routes.post("/register", validateUser, registerUser);
@@ -24,9 +26,16 @@ routes.post("/refresh", refreshToken);
 routes.post("/verifyOtp", verifyOtp);
 routes.post("/verifyEmail", emailVerification);
 routes.post("/ResetPassword", resetPassword);
-routes.post("/sendInvoice", uploadFile, validateInputs,saveInvoice);
+routes.post("/sendInvoice", uploadFile, validateInputs, saveInvoice);
 
-routes.get("/loadInvoice", loadInvoice)
-
+routes.get("/loadInvoice", loadInvoice);
 routes.get("/users", validateToken, getUsersData);
+
+routes.put(
+  "/updateInvoice/:invoiceId",
+  validateToken,
+  updateInvoiceHelper,
+  updateInvoice
+);
+
 module.exports = routes;
