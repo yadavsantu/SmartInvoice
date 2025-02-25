@@ -14,7 +14,7 @@
       <ul>
         <li><router-link to="/HelpPage">Help</router-link></li>
         <li><router-link to="/LoginDashboard">My Invoices</router-link></li>
-        <li><a href="#">Invoicing Guide</a></li>
+        <li><a href="InvoiceGuide">Invoice Guide</a></li>
         
         <li><router-link to="/LoginPage">Sign In</router-link></li>
         <li><router-link to="/Signup">Sign Up</router-link></li>

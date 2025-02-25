@@ -8,9 +8,9 @@
       </div>
 
       <ul class="nav-links">
-        <li><a href="HelpPage">Help</a></li>
-        <li v-if="isLoggedIn"><a href="LoginDashboard">My Invoices</a></li>
-        <li><a href="#">Invoicing Guide</a></li>
+        <li><a href="HelpPage"><strong>Help</strong></a></li>
+        <li v-if="isLoggedIn"><a href="LoginDashboard"><strong>My Invoices</strong></a></li>
+        <li><a href="InvoiceGuide"><strong>Invoice Guide</strong></a></li>
 
         <!-- Show User Name when logged in -->
         <li class="user-name">{{ userName }}</li>
