@@ -47,11 +47,15 @@
               <div v-if="errors.date" class="error-message">{{ errors.date }}</div>
             </div>
             <div>
-              <label>Payment Terms</label>
-              <input type="text" v-model="paymentTerms" :class="{ 'input-error': errors.paymentTerms }"
-                @blur="validateField('paymentTerms')" />
-              <div v-if="errors.paymentTerms" class="error-message">{{ errors.paymentTerms }}</div>
-            </div>
+  <label> Enter Email(optional)</label>
+  <input 
+    type="email" 
+    v-model="email" 
+    :class="{ 'input-error': errors.email }"
+    @blur="validateField('email')" 
+  />
+  <div v-if="errors.email" class="error-message">{{ errors.email }}</div>
+</div>
           </div>
 
           <div class="form-group">
@@ -200,7 +204,7 @@ export default {
       billTo: "",
       shipTo: "",
       date: new Date(Date.now()),
-      paymentTerms: "",
+      email: '',
       dueDate: "",
       notes: "",
       terms: "",
@@ -222,7 +226,7 @@ export default {
         from: false,
         billTo: false,
         date: false,
-        paymentTerms: false,
+        email: '',
         dueDate: false,
         items: [],
         discount: false,
@@ -239,18 +243,29 @@ export default {
       this.logoData = null;
     },
     validateField(field) {
-      if (field === "invoiceNumber" && !Number.isInteger(Number(this.invoiceNumber))) {
-        this.errors.invoiceNumber = "Invoice Number must be an integer";
-      } else if (field === "from" && !/^[a-zA-Z\s]+$/.test(this.from)) {
-        this.errors.from = "Sender's name must be a valid string";
-      } else if (field === "discount" && this.discount < 0) {
-        this.errors.discount = "Discount cannot be negative";
-      } else if (field === "taxRate" && this.taxRate < 0) {
-        this.errors.taxRate = "Tax rate cannot be negative";
-      } else {
-        this.errors[field] = false;
-      }
-    },
+  if (field === "invoiceNumber" && !Number.isInteger(Number(this.invoiceNumber))) {
+    this.errors.invoiceNumber = "Invoice Number must be an integer";
+  } else if (field === "from" && !/^[a-zA-Z\s]+$/.test(this.from)) {
+    this.errors.from = "Sender's name must be a valid string";
+  } else if (field === "discount" && this.discount < 0) {
+    this.errors.discount = "Discount cannot be negative";
+  } else if (field === "taxRate" && this.taxRate < 0) {
+    this.errors.taxRate = "Tax rate cannot be negative";
+  } else if (field === "email") {
+    if (this.email && !this.isValidEmail(this.email)) {
+      this.errors.email = "Enter a valid email address";
+    } else {
+      this.errors.email = false; // No error if empty or valid email
+    }
+  } else {
+    this.errors[field] = false;
+  }
+},
+
+isValidEmail(email) {
+  const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  return emailPattern.test(email);
+},
     validateItemField(index, field) {
       if (this.items[index][field] === "") {
         this.errors.items[index] = this.errors.items[index] || {};
@@ -331,7 +346,7 @@ export default {
     billTo: this.billTo === "" ? "Receiver's name is required" : false,
     shipTo: this.shipTo === "" ? "Shipping address is required" : false,
     date: this.date === "" ? "Date is required" : false,
-    paymentTerms: this.paymentTerms === "" ? "Payment Terms are required" : false,
+   
     dueDate: this.dueDate === "" ? "Due Date is required" : false,
     discount: this.discount < 0 ? "Discount cannot be negative" : false,
     taxRate: this.taxRate < 0 ? "Tax rate cannot be negative" : false,
@@ -544,7 +559,7 @@ export default {
       formData.append("billTo", this.billTo);
       formData.append("shipTo", this.shipTo);
       formData.append("date", this.date);
-      formData.append("paymentTerms", this.paymentTerms);
+      formData.append("email", this.email || "");
       formData.append("dueDate", this.dueDate);
       formData.append("notes", this.notes);
       formData.append("terms", this.terms);
@@ -588,7 +603,7 @@ export default {
       this.billTo = "";
       this.shipTo = "";
       this.date = "";
-      this.paymentTerms = "";
+      this.email = "";
       this.dueDate = "";
       this.notes = "";
       this.terms = "";
@@ -608,7 +623,7 @@ export default {
         from: false,
         billTo: false,
         date: false,
-        paymentTerms: false,
+        
         dueDate: false,
         items: [],
         discount: false,
