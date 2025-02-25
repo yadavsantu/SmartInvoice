@@ -1,5 +1,5 @@
-# Ignore log files
+# Ignore logs, node_modules, and uploads
 *.log
 logs/
 node_modules/
-uplods/
+uploads/
