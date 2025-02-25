@@ -28,7 +28,7 @@ const Invoices = new Schema({
   ],
   balanceDue: { type: String, required: true },
   status:{type:String, default:"Unpaid"},
-  logo: { type: Schema.Types.Mixed, required: true },
+  pdf: { type: Schema.Types.Mixed, required: true },
 });
 
 Invoices.index({ userId: 1, invoiceNumber: 1 }, { unique: true });

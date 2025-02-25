@@ -2,6 +2,8 @@ const jwt = require("jsonwebtoken");
 const mongoose = require("mongoose");
 const invoiceModel = require("./../models/InvoiceModel");
 const userModel = require("./../models/usermodels");
+const fs = require("fs");
+const path = require("path");
 
 const insertInvoice = async (req, res) => {
   const accessToken = req.headers.authorization;
@@ -9,27 +11,32 @@ const insertInvoice = async (req, res) => {
     return res.status(400).json({ error: "Please Login First" });
   }
 
-
-
   try {
     const token = accessToken.split(" ")[1];
     const user = jwt.verify(token, process.env.SECRET);
-
     const foundUser = await userModel.findOne({ email: user.email });
 
     if (!foundUser) {
       return res.status(400).json({ error: "User not found" });
     }
 
-    const newInvoice = new invoiceModel({...req.body , userId: foundUser._id });
-    const saveInvoice = await newInvoice.save();
+    if (!req.file) {
+      return res.status(400).json({ error: "Invoice PDF is required" });
+    }
 
-    return res.status(200).json({ message: "Invoice Saved in Database " });
+    const pdfPath = path.join("uploads", req.file.filename);
+    
+    const newInvoice = new invoiceModel({
+      ...req.body,
+      userId: foundUser._id,
+      pdf: pdfPath,
+    });
+    
+    const saveInvoice = await newInvoice.save();
+    return res.status(200).json({ message: "Invoice Saved in Database", filePath: pdfPath });
   } catch (error) {
     console.log(error);
-    return res
-      .status(400)
-      .json({ message: "Error Saving Invoice to database " });
+    return res.status(400).json({ message: "Error Saving Invoice to database" });
   }
 };
 

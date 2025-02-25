@@ -8,7 +8,6 @@ const validateInputs = (req, res, next) => {
     }
 
     const Schema = Joi.object({
-      logo: Joi.any().optional().label("image"),
       invoiceNumber: Joi.number().required(),
       from: Joi.string().required(),
       billTo: Joi.string().required(),
