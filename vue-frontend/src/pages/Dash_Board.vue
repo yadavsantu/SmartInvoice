@@ -382,16 +382,11 @@ isValidEmail(email) {
       formData.append("total", this.total);
       formData.append("items", JSON.stringify(this.items));
       formData.append("balanceDue", this.balanceDue);
-      formData.append("logo", this.logoData);
+     
 
       try {
         const pdfBlob = await this.generatePdf();
         formData.append("invoicePdf", pdfBlob, "invoice.pdf");
-              if(pdfBlob)
-              {
-                alert("PDF generated successfully!");
-              }
-          
         const response = await axios.post("http://localhost:8080/api/v1/sendInvoice", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
