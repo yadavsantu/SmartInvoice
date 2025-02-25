@@ -1,6 +1,7 @@
 const Joi = require("joi");
 
 const validateInputs = (req, res, next) => {
+  console.log("Validating Inputs");
   try {
     if (typeof req.body.items === "string") {
       req.body.items = JSON.parse(req.body.items);
@@ -13,7 +14,7 @@ const validateInputs = (req, res, next) => {
       billTo: Joi.string().required(),
       shipTo: Joi.string().optional(),
       date: Joi.date().required(),
-      paymentTerms: Joi.string().optional(),
+      email: Joi.string().optional(),
       dueDate: Joi.date().required(),
       notes: Joi.string().required(),
       terms: Joi.string().required(),

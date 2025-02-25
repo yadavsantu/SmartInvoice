@@ -8,7 +8,7 @@ const Invoices = new Schema({
   billTo: { type: String, required: true },
   shipTo: { type: String, required: true },
   date: { type: Date, required: true },
-  paymentTerms: { type: String, required: true },
+  email: { type: String, required: false },
   dueDate: { type: Date, required: true },
   notes: { type: String, default: "None" },
   terms: { type: String, default: "None" },
