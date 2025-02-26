@@ -170,7 +170,7 @@
           <option value="dollars">Dollars</option>
           <option value="euro">Euro</option>
         </select>
-        <button @click="createInvoice">Create Invoice</button>
+        <hr />
         <button @click="sendEmail">Send to email</button>
         <hr />
       </div>
@@ -286,42 +286,7 @@ isValidEmail(email) {
     removeItem(index) {
       this.items.splice(index, 1);
     },
-    createInvoice() {
-      // Update errors object with validation results
-      this.errors = {
-        invoiceNumber: this.invoiceNumber === "" || !Number.isInteger(Number(this.invoiceNumber)) ? "Invoice Number must be an integer" : false,
-        from: this.from === "" || !/^[a-zA-Z\s]+$/.test(this.from) ? "Sender's name can only contain alphabets" : false,
-        billTo: this.billTo === "" ? "Receiver's name is required" : false,
-        shipTo: this.shipTo === "" ? "Shipping address is required" : false,
-        date: this.date === "" ? "Date is required" : false,
-        paymentTerms: this.paymentTerms === "" ? "Payment Terms are required" : false,
-        dueDate: this.dueDate === "" ? "Due Date is required" : false,
-        discount: this.discount < 0 ? "Discount cannot be negative" : false,
-        taxRate: this.taxRate < 0 ? "Tax rate cannot be negative" : false,
-        items: this.items.map((item) => ({
-          description: item.description === "" ? "Description is required" : false,
-          quantity: item.quantity <= 0 ? "Quantity must be greater than 0" : false,
-          rate: item.rate <= 0 ? "Rate must be greater than 0" : false,
-        })),
-      };
-
-      // Check for top-level errors
-      const hasTopLevelErrors = Object.values(this.errors).some(
-        (error) => error && !Array.isArray(error)
-      );
-
-      // Check for item-specific errors
-      const hasItemErrors = this.errors.items.some((itemErrors) =>
-        Object.values(itemErrors).some((error) => error)
-      );
-
-      // Final validation check
-      if (!hasTopLevelErrors && !hasItemErrors) {
-        alert("Invoice created successfully!");
-      } else {
-        alert("Please fill all required fields!");
-      }
-    },
+   
 
 
     formattedAmount(amount) {
@@ -363,6 +328,12 @@ isValidEmail(email) {
         alert("Please LogIn First");
         return;
       }
+        // ✅ Check if email is empty
+  if (!this.email || this.email.trim() === "") {
+    alert("Please enter a valid email address before sending the invoice.");
+    return;
+  }
+
 
       const formData = new FormData();
       formData.append("invoiceNumber", this.invoiceNumber);
@@ -386,6 +357,7 @@ isValidEmail(email) {
 
       try {
         const pdfBlob = await this.generatePdf();
+        
         formData.append("invoicePdf", pdfBlob, "invoice.pdf");
         const response = await axios.post("http://localhost:8080/api/v1/sendInvoice", formData, {
           headers: {

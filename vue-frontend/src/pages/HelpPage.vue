@@ -22,20 +22,20 @@
             </li>
             <li>
               <h3>How can I contact support?</h3>
-              <p>Use the Contact Us form below or email us at support@example.com.</p>
+              <p>Use the Contact Us form below or email us at <strong>sandeshprasai4321@gmail.com</strong></p>
             </li>
           </ul>
         </section>
   
         <!-- Invoice Generator Section -->
         <section class="invoice-info-section">
-          <h2>Invoice Generator Features</h2>
+          <h2><strong>Smart Invoice</strong> Features</h2>
           <p>
             Create professional invoices effortlessly with our easy-to-use invoice template. 
             Generate, customize, and send invoices in just a few clicks.
           </p>
           <br>
-          <h3>Why Use Invoice Generator?</h3>
+          <h3>Why Use <strong>Smart Invoice</strong>?</h3>
           <ul>
             <li><strong>Instant Invoices:</strong> Generate and download invoices instantly without account creation.</li>
             <li><strong>Invoice from Any Device:</strong> Invoice on-the-go from any device, desktop, tablet, or smartphone.</li>
@@ -43,15 +43,15 @@
             <li><strong>100% Free:</strong> There are no limits. Use it as much as you like.</li>
           </ul>
           <p>
-            Our objective at Invoice-Generator.com is to make invoicing as simple as possible. We built this invoice generator solely dedicated to this purpose. We want to give you the best possible invoicing experience, and hope it saves you from the many frustrations that come with invoicing.
+            Our objective at <strong>Smart Invoice</strong> is to make invoicing as simple as possible. We built this invoice generator solely dedicated to this purpose. We want to give you the best possible invoicing experience, and hope it saves you from the many frustrations that come with invoicing.
           </p>
           <br>
-          <h3>How to Use Invoice Generator</h3>
+          <h3>How to Use Smart Invoice</h3>
           <ul>
-            <li><strong>Making Invoices:</strong> Fill out the invoice template with all the details you want on your invoice. The invoice editor closely matches what the resulting invoice will look like. Once you have filled in the invoice template you are ready to download or send your invoice.</li>
+            <li><strong>Making Invoices:</strong> Fill out the invoice template with all the details you want on your invoice. Once you have filled in the invoice template you are ready to download or send your invoice.</li>
             <li><strong>Sending Invoices:</strong> Invoices can be sent to customers. Your invoices are stored securely.</li>
-            <li><strong>Downloading Invoices:</strong> Click the Download Invoice to download a PDF of your invoice. If you made a mistake, don't worry, you can go back and update the invoice . If you do not see your invoice once you click download then you should check your Downloads folder.</li>
-            <li><strong>Saving Invoices:</strong> Invoices that you download or send are auto-saved to your device's local storage. This allows you to go back and edit past invoices. You can access past invoices on the History page. Click on a previously generated invoice to open it in the invoice editor. You can also export all of your invoices to a spreadsheet file by clicking the Export button.</li>
+            <li><strong>Downloading Invoices:</strong> Click the Download Invoice to download a PDF of your invoice. If you do not see your invoice once you click download then you should check your Downloads folder.</li>
+            <li><strong>Saving Invoices:</strong> Invoices that you download or send are auto-saved to your device's local storage. This allows you to go back and update status of unpaid invoices. You can access past invoices on the My Invoices page.</li>
           </ul>
   
           <h3>System Requirements</h3>
@@ -70,12 +70,12 @@
             <li>TLS v1.2 or above</li>
           </ul>
   
-          <h3>Where Does Invoice Generator Store Invoices?</h3>
+          <h3>Where Does Smart Invoice Store Invoices?</h3>
           <p>
-            <strong>Send Invoice feature:</strong> If you have used the Send Invoice option then you or your recipient can retrieve the invoice at any time by signing in to Invoice-Generator.com.
+            <strong>Send Invoice feature:</strong> If you have used the Send Invoice option then you or your recipient can retrieve the invoice at any time by signing in to database of Smart Invoice.
           </p>
           <p>
-            <strong>Download Invoice feature:</strong> Invoice Generator uses your web browser's local storage to remember your invoices without requiring you to create an account with us. We do not maintain any copies of your downloaded invoice on our servers. Clearing your browser history will clear all of your invoices on Invoice Generator and they cannot be recovered.
+            <strong>Download Invoice feature:</strong> Smart Invoice uses your web browser's local storage to remember your invoices without requiring you to create an account with us. We do maintain the copies of your downloaded invoice on our servers.
           </p>
   
         </section>
