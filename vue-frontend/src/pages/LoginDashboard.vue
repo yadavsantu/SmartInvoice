@@ -8,11 +8,11 @@
           <h1>Invoice History</h1>
           <button class="new-invoice" @click="goToDashboard">New Invoice</button>
         </div>
-         <!-- Search Bar -->
-         <div class="search-bar">
-          <input v-model="searchQuery" placeholder="Search invoices..." />
+        <!-- Search Bar -->
+        <div class="search-bar">
+          <input v-model="searchQuery" placeholder="Search invoices..." @input="handleSearch" />
         </div>
-          
+
 
         <!-- Content Section -->
         <div class="content">
@@ -116,13 +116,12 @@ export default {
     }
   },
   methods: {
-    async loadInvoices() {
+    async loadInvoices(query = "") {
       try {
         const accessToken = localStorage.getItem("refreshToken") || localStorage.getItem("accessToken");
         const response = await axios.get("http://localhost:8080/api/v1/loadInvoice", {
-          headers: {
-            "Authorization": `Bearer ${accessToken}`
-          }
+          headers: { "Authorization": `Bearer ${accessToken}` },
+          params: query ? { search: query } : {},
         });
 
         if (response.data && response.data.invoices) {
@@ -137,8 +136,7 @@ export default {
       } catch (error) {
         console.error("Error loading invoices:", error);
       }
-    }
-    ,
+    },
     async updateInvoice(index) {
       const selectedInvoice = this.invoices[index];
 
@@ -198,41 +196,39 @@ export default {
 
 
     async downloadInvoice(index) {
-  const selectedInvoice = this.invoices[index];
-  const invoiceId = selectedInvoice._id;
+      const selectedInvoice = this.invoices[index];
+      const invoiceId = selectedInvoice._id;
 
-  try {
-    const response = await axios.get(
-      `http://localhost:8080/api/v1/download/${invoiceId}`,
-      { responseType: 'blob' }  // Ensures response is a file (blob)
-    );
+      try {
+        const response = await axios.get(
+          `http://localhost:8080/api/v1/download/${invoiceId}`,
+          { responseType: 'blob' }  // Ensures response is a file (blob)
+        );
 
-    // ✅ Correct status check
-    if (response.status !== 200) {
-      console.error("Download failed with status", response.status);
-      throw new Error("Failed to download invoice");
+
+        if (response.status !== 200) {
+          console.error("Download failed with status", response.status);
+          throw new Error("Failed to download invoice");
+        }
+
+
+        const blob = response.data;
+        const url = window.URL.createObjectURL(blob);
+
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = `invoice-${invoiceId}.pdf`;
+
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        setTimeout(() => window.URL.revokeObjectURL(url), 100);
+
+      } catch (error) {
+        console.error("Download Error:", error);
+      }
     }
-
-    // ✅ Use response.data instead of await response.blob()
-    const blob = response.data; 
-    const url = window.URL.createObjectURL(blob);
-
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = `invoice-${invoiceId}.pdf`;
-
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-
-    // ✅ Release memory after download
-    setTimeout(() => window.URL.revokeObjectURL(url), 100);
-
-  } catch (error) {
-    console.error("Download Error:", error);
-  }
-}
-,
+    ,
     formattedAmount(amount) {
       const numericAmount = parseFloat(amount) || 0;
       switch (this.currency) {
@@ -246,7 +242,12 @@ export default {
           return `${numericAmount.toFixed(2)}`;
       }
     },
-
+    handleSearch() {
+      clearTimeout(this.searchTimeout);
+      this.searchTimeout = setTimeout(() => {
+        this.loadInvoices(this.searchQuery);
+      }, 500); // 500ms delay after user stops typing
+    },
     formatDate(date) {
       if (!date) return "N/A";
       return new Date(date).toLocaleDateString("en-GB"); // Format: DD/MM/YYYY
@@ -298,6 +299,7 @@ export default {
   margin: 0 auto;
   box-sizing: border-box;
 }
+
 .search-bar {
   margin-bottom: 20px;
 }
@@ -309,6 +311,7 @@ export default {
   border: 1px solid #ccc;
   border-radius: 5px;
 }
+
 .title {
   flex: 2;
   padding: 20px;
@@ -451,4 +454,4 @@ button:hover {
     font-size: 14px;
   }
 }
-</style>   
+</style>
