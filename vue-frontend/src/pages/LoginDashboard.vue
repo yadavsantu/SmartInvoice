@@ -152,7 +152,7 @@ export default {
         return;
       }
 
-     
+
       if (!confirm(`Are you sure you want to update the status for invoice no ${selectedInvoice.invoiceNumber}?`)) {
         return;
       }
@@ -197,10 +197,38 @@ export default {
     },
 
 
-    downloadInvoice(index) {
-      if (confirm("Are you sure you want to delete this invoice?")) {
-        this.invoices.splice(index, 1);
-        localStorage.setItem("invoiceHistory", JSON.stringify(this.invoices));
+    async downloadInvoice(index) {
+      const selectedInvoice = this.invoices[index];
+      const invoiceId = selectedInvoice._id;
+      try {
+        const response = await axios.get(
+          `http://localhost:8080/api/v1/download/${invoiceId}`,
+          { responseType: 'blob' } 
+        );
+
+        if (!response.status==200) {
+          // const errorText = await response.text();
+          console.error("Download failed with status", response.status);
+          throw new Error("Failed to download invoice");
+        }
+
+        // Convert the response to a blob
+        const blob = await response.blob();
+  
+        const url = window.URL.createObjectURL(blob);
+    
+        const link = document.createElement("a");
+        link.href = url;
+
+        link.download = `invoice-${invoiceId}.pdf`;
+
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        setTimeout(() => window.URL.revokeObjectURL(url), 100);
+
+      } catch (error) {
+        console.error("Download Error:", error);
       }
     },
     formattedAmount(amount) {
