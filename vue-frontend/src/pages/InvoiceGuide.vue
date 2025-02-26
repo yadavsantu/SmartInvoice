@@ -21,6 +21,10 @@
                         <p>Enter a unique invoice number for each invoice. This helps in tracking and referencing invoices easily.</p>
                     </li>
                     <li>
+                        <h3>Add Your Logo</h3>
+                        <p>Upload your company's logo here. Please upload a valid image file (JPEG, PNG, GIF, or SVG). File size should not exceed 2MB.</p>
+                    </li>
+                    <li>
                         <h3>From</h3>
                         <p>Specify the name and address of the sender (your business or personal information).</p>
                     </li>
@@ -34,11 +38,11 @@
                     </li>
                     <li>
                         <h3>Date</h3>
-                        <p>Enter the date when the invoice is created.</p>
+                        <p>Enter the date when the invoice is created. This field takes input as the present date if not filled manually.</p>
                     </li>
                     <li>
                         <h3>Email</h3>
-                        <p>Provide the recipient's email address to send the invoice electronically.</p>
+                        <p>Provide the recipient's email address to send the invoice electronically. If you are downloading pdf of invoice without <strong>Log In</strong>, then no need to fill this field.</p>
                     </li>
                     <li>
                         <h3>Due Date</h3>
@@ -54,11 +58,11 @@
                     </li>
                     <li>
                         <h3>Tax Rate</h3>
-                        <p>Enter the applicable tax rate for the invoice.</p>
+                        <p>Enter the applicable tax rate for the invoice. Please enter the percentage of tax.</p>
                     </li>
                     <li>
                         <h3>Discount</h3>
-                        <p>Specify any discount applicable to the invoice.</p>
+                        <p>Specify any discount applicable to the invoice. Please enter the discount in amount not in %.</p>
                     </li>
                     <li>
                         <h3>Shipping</h3>
@@ -70,7 +74,7 @@
                     </li>
                     <li>
                         <h3>Items</h3>
-                        <p>List the items or services being billed. Include description, quantity, rate, and amount for each item.</p>
+                        <p>List the items or services being billed. Include description, quantity and rate. The amount for each item is calculated automatically.</p>
                     </li>
                 </ul>
             </section>
