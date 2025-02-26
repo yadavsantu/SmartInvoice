@@ -8,14 +8,17 @@
           <h1>Invoice History</h1>
           <button class="new-invoice" @click="goToDashboard">New Invoice</button>
         </div>
-
-
+         <!-- Search Bar -->
+         <div class="search-bar">
+          <input v-model="searchQuery" placeholder="Search invoices..." />
+        </div>
+          
 
         <!-- Content Section -->
         <div class="content">
           <!-- Mobile view: Card layout -->
           <div class="mobile-cards" v-if="isMobileView">
-            <div v-for="(invoice, index) in invoices" :key="invoice._id" class="invoice-card">
+            <div v-for="(invoice, index) in filteredInvoices" :key="invoice._id" class="invoice-card">
               <div class="card-row">
                 <strong>Customer:</strong> {{ invoice.billTo }}
               </div>
@@ -47,34 +50,17 @@
             <table>
               <thead>
                 <tr>
-    <th @click="setSortKey('billTo')">
-      Customer 
-      <span v-if="sortKey === 'billTo'">{{ sortOrder === 1 ? "🔼" : "🔽" }}</span>
-    </th>
-    <th @click="setSortKey('invoiceNumber')">
-      Invoice Number 
-      <span v-if="sortKey === 'invoiceNumber'">{{ sortOrder === 1 ? "🔼" : "🔽" }}</span>
-    </th>
-    <th @click="setSortKey('date')">
-      Date
-      <span v-if="sortKey === 'date'">{{ sortOrder === 1 ? "🔼" : "🔽" }}</span>
-    </th>
-    <th @click="setSortKey('dueDate')">
-      Due Date
-      <span v-if="sortKey === 'dueDate'">{{ sortOrder === 1 ? "🔼" : "🔽" }}</span>
-    </th>
-    <th @click="setSortKey('status')">
-      Status 
-      <span v-if="sortKey === 'status'">{{ sortOrder === 1 ? "🔼" : "🔽" }}</span>
-    </th>
-    <th>Total Amount</th>
-    <th>Actions</th>
-</tr>
-
-</thead>
-
+                  <th>Customer</th>
+                  <th>Invoice Number</th>
+                  <th>Date</th>
+                  <th>Due Date</th>
+                  <th>Status</th>
+                  <th>Total Amount</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
               <tbody>
-                <tr v-for="(invoice, index) in sortedInvoices" :key="invoice._id">
+                <tr v-for="(invoice, index) in filteredInvoices" :key="invoice._id">
                   <td>{{ invoice.billTo }}</td>
                   <td>{{ invoice.invoiceNumber }}</td>
                   <td>{{ formatDate(invoice.date) }}</td>
@@ -115,40 +101,21 @@ export default {
   data() {
     return {
       invoices: [],
+      searchQuery: "",
       currency: "rupees",
       isMobileView: false,
-      sortKey: "billTo", // Default sorting by Customer Name
-      sortOrder: 1, // 1 for ascending, -1 for descending
     };
   },
   computed: {
-  sortedInvoices() {
-    return [...this.invoices].sort((a, b) => {
-        let valA = a[this.sortKey];
-        let valB = b[this.sortKey];
-
-        // Handle sorting for invoice numbers (convert to integer)
-        if (this.sortKey === 'invoiceNumber') {
-          valA = parseInt(valA, 10);
-          valB = parseInt(valB, 10);
-        }
-
-        if (valA < valB) return -1 * this.sortOrder;
-        if (valA > valB) return 1 * this.sortOrder;
-        return 0;
-      });
+    filteredInvoices() {
+      return this.invoices.filter(invoice =>
+        invoice.billTo.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+        invoice.invoiceNumber.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+        invoice.status.toLowerCase().includes(this.searchQuery.toLowerCase())
+      );
+    }
   },
-},
-
   methods: {
-    setSortKey(key) {
-      if (this.sortKey === key) {
-        this.sortOrder *= -1; // Toggle between ascending & descending
-      } else {
-        this.sortKey = key;
-        this.sortOrder = 1;
-      }
-    },
     async loadInvoices() {
       try {
         const accessToken = localStorage.getItem("refreshToken") || localStorage.getItem("accessToken");
@@ -279,7 +246,7 @@ export default {
   flex: 2;
   flex-direction: column;
   min-height: 100vh;
-  width: 115%;
+  width: 100%;
 }
 
 .main-content {
@@ -301,7 +268,17 @@ export default {
   margin: 0 auto;
   box-sizing: border-box;
 }
+.search-bar {
+  margin-bottom: 20px;
+}
 
+.search-bar input {
+  width: 50%;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
 .title {
   flex: 2;
   padding: 20px;
@@ -444,4 +421,4 @@ button:hover {
     font-size: 14px;
   }
 }
-</style>
+</style>   
