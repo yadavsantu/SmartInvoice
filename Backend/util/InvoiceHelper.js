@@ -1,6 +1,8 @@
 const mongoose = require("mongoose");
 
-const updateInvoiceHelper = (req, res,next) => {
+const updateInvoiceHelper = (req, res, next) => {
+  console.log("Entered updateInvoiceHelper with params:", req.params);
+
   const { invoiceId } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(invoiceId)) {
@@ -8,8 +10,7 @@ const updateInvoiceHelper = (req, res,next) => {
     return res.status(400).json({ message: "Invalid id" });
   }
 
-  next()
-
+  next();
 };
 
 module.exports = updateInvoiceHelper;

@@ -16,8 +16,10 @@ const validateInputs = require("./../util/validateInputs");
 const uploadFile = require("../Helper/uploadFile");
 const saveInvoice = require("./../userController/insertInvoice");
 const loadInvoice = require("./../userController/loadInvoices");
-const updateInvoiceHelper = require("../util/updateInvoiceHelper");
+const updateInvoiceHelper = require("../util/InvoiceHelper");
 const updateInvoice = require("../userController/updateInvoiceStatus");
+const downloadInvoice = require('../userController/DownloadInvoice')
+
 
 const routes = express.Router();
 routes.post("/register", validateUser, registerUser);
@@ -27,6 +29,8 @@ routes.post("/verifyOtp", verifyOtp);
 routes.post("/verifyEmail", emailVerification);
 routes.post("/ResetPassword", resetPassword);
 routes.post("/sendInvoice", uploadFile, validateInputs, saveInvoice);
+
+routes.get("/download/:invoiceId",updateInvoiceHelper, downloadInvoice);
 
 routes.get("/loadInvoice", loadInvoice);
 routes.get("/users", validateToken, getUsersData);
