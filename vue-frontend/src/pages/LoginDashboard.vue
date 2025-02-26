@@ -198,39 +198,41 @@ export default {
 
 
     async downloadInvoice(index) {
-      const selectedInvoice = this.invoices[index];
-      const invoiceId = selectedInvoice._id;
-      try {
-        const response = await axios.get(
-          `http://localhost:8080/api/v1/download/${invoiceId}`,
-          { responseType: 'blob' } 
-        );
+  const selectedInvoice = this.invoices[index];
+  const invoiceId = selectedInvoice._id;
 
-        if (!response.status==200) {
-          // const errorText = await response.text();
-          console.error("Download failed with status", response.status);
-          throw new Error("Failed to download invoice");
-        }
+  try {
+    const response = await axios.get(
+      `http://localhost:8080/api/v1/download/${invoiceId}`,
+      { responseType: 'blob' }  // Ensures response is a file (blob)
+    );
 
-        // Convert the response to a blob
-        const blob = await response.blob();
-  
-        const url = window.URL.createObjectURL(blob);
-    
-        const link = document.createElement("a");
-        link.href = url;
+    // ✅ Correct status check
+    if (response.status !== 200) {
+      console.error("Download failed with status", response.status);
+      throw new Error("Failed to download invoice");
+    }
 
-        link.download = `invoice-${invoiceId}.pdf`;
+    // ✅ Use response.data instead of await response.blob()
+    const blob = response.data; 
+    const url = window.URL.createObjectURL(blob);
 
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        setTimeout(() => window.URL.revokeObjectURL(url), 100);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `invoice-${invoiceId}.pdf`;
 
-      } catch (error) {
-        console.error("Download Error:", error);
-      }
-    },
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    // ✅ Release memory after download
+    setTimeout(() => window.URL.revokeObjectURL(url), 100);
+
+  } catch (error) {
+    console.error("Download Error:", error);
+  }
+}
+,
     formattedAmount(amount) {
       const numericAmount = parseFloat(amount) || 0;
       switch (this.currency) {
