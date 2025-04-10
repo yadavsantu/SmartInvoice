@@ -244,7 +244,7 @@ export default {
     validateField(field) {
   if (field === "invoiceNumber" && !Number.isInteger(Number(this.invoiceNumber))) {
     this.errors.invoiceNumber = "Invoice Number must be an integer";
-  } else if (field === "from" && !/^[a-zA-Z\s]+$/.test(this.from)) {
+  } else if (field === "from" && !/^[a-zA-Z0-9\s,-]+$/.test(this.from)) {
     this.errors.from = "Sender's name must be a valid string";
   } else if (field === "discount" && this.discount < 0) {
     this.errors.discount = "Discount cannot be negative";
@@ -343,8 +343,8 @@ isValidEmail(email) {
       formData.append("date", this.date);
       formData.append("email", this.email || "");
       formData.append("dueDate", this.dueDate);
-      formData.append("notes", this.notes);
-      formData.append("terms", this.terms);
+      formData.append("notes", this.notes.trim()==="" ? "NA" : this.notes);
+      formData.append("terms", this.terms.trim()==="" ? "NA" : this.terms);
       formData.append("taxRate", this.taxRate);
       formData.append("discount", this.discount);
       formData.append("shipping", this.shipping);
@@ -383,9 +383,8 @@ isValidEmail(email) {
       // Step 1: Perform validation checks and update errors object
       this.errors = {
         invoiceNumber: this.invoiceNumber === "" || !Number.isInteger(Number(this.invoiceNumber)) ? "Invoice Number must be an integer" : false,
-        from: this.from === "" || !/^[a-zA-Z\s]+$/.test(this.from) ? "Sender's name can only contain alphabets" : false,
+        from: this.from === "" || !/^[a-zA-Z0-9\s,-]+$/.test(this.from) ? "Sender's name must be a valid string" : false,
         billTo: this.billTo === "" ? "Receiver's name is required" : false,
-        shipTo: this.shipTo === "" ? "Shipping address is required" : false,
         date: this.date === "" ? "Date is required" : false,
         dueDate: this.dueDate === "" ? "Due Date is required" : false,
         discount: this.discount < 0 ? "Discount cannot be negative" : false,
