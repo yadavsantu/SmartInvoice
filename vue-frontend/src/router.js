@@ -8,11 +8,12 @@ import checkAuthStatus from "../utills/checkTokenStatus";
 import HelpPage from "./pages/HelpPage.vue";
 import InvoiceGuide from "./pages/InvoiceGuide.vue";
 import OtpPage from "./components/OtpInput.vue"
-
+import SettingsPage from "./pages/SettingsPage.vue";
 
 
 const routes = [
   { path: "/SignUp", component: SignUp, meta: { showNavBar: false, title: "Sign Up - Smart Invoice" } },
+  { path: "/Settings", component: SettingsPage, meta: { showNavBar: false, title: "Sign Up - Smart Invoice" } },
   { path: "/LoginPage", component: LoginPage, meta: { showNavBar: false, title: "Login - Smart Invoice" } },
   { path: "/DashBoard",  name: "DashBoard", component: Dashboard, meta: { showNavBar: true, title: "Dashboard - Smart Invoice"} },
   {path: "/LoginDashboard",component: MyInvoicesPage, meta: { showNavBar: true, title: "My Invoices - Smart Invoice" }},
