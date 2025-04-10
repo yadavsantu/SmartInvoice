@@ -88,18 +88,19 @@
 .parent {
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
-  margin: 2rem;
+  justify-content: center;
   align-items: center;
-  height: 100vh;
+  min-height: 100vh;
   width: 100vw;
-  overflow-y: auto; /* Allow scrolling */
+  padding: 2rem; /* Use padding instead of margin */
+  box-sizing: border-box;
 }
+
+
 
 
 .profile-container {
   margin: 2rem;
-  /* width: 800px; */
   width: auto;
   height: auto;
   padding: 40px;
