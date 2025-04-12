@@ -15,7 +15,7 @@ const validateInputs = (req, res, next) => {
       date: Joi.date().required(),
       email: Joi.string().optional(),
       dueDate: Joi.date().required(),
-      notes: Joi.string().optional(),
+      TaxNO: Joi.string().optional(),
       terms: Joi.string().optional(),
       taxRate: Joi.number().precision(2).optional(),
       discount: Joi.number().precision(2).optional(),
