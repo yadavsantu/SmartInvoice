@@ -9,7 +9,7 @@
         <div class="invoice-header">
           <LogoPlaceholder @logo-uploaded="handleLogoUploaded" @logo-removed="handleLogoRemoved" />
 
-          <h1>INVOICE</h1>
+          <h1>TAX INVOICE</h1>
           <div class="invoice-number">
             <label for="invoice-number">#</label>
             <input id="invoice-number" type="text" v-model="invoiceNumber"
@@ -20,7 +20,7 @@
 
         <div class="invoice-body">
           <div class="form-group">
-            <label>Who is this from?</label>
+            <label>Sender</label>
             <input type="text" v-model="from" :class="{ 'input-error': errors.from }" @blur="validateField('from')" />
             <div v-if="errors.from" class="error-message">{{ errors.from }}</div>
           </div>
@@ -38,6 +38,12 @@
                 @blur="validateField('shipTo')" />
               <div v-if="errors.shipTo" class="error-message">{{ errors.shipTo }}</div>
             </div>
+            <div class="TaxNO">
+            <label>VAT or PAN No</label>
+            <input type="text" placeholder="Enter customer's VAT or PAN no" v-model="TaxNO" :class="{ 'input-error': errors.TaxNO }"
+                @blur="validateField('shipTo')" />
+                
+          </div>
           </div>
 
           <div class="form-group double">
@@ -110,12 +116,9 @@
 
         <!-- Additional Fields -->
         <div class="additional-fields">
-          <div class="notes">
-            <label>Notes</label>
-            <textarea v-model="notes" placeholder="Notes - any relevant information not already covered"></textarea>
-          </div>
+          
           <div class="terms">
-            <label>Terms</label>
+            <label>Terms and conditions</label>
             <textarea v-model="terms"
               placeholder="Terms and conditions - late fees, payment methods, delivery schedule"></textarea>
           </div>
@@ -184,8 +187,10 @@ import FooterComponent from "../components/FooterComponent.vue";
 import LogoPlaceholder from "../components/LogoPlaceholder.vue";
 import "../assets/css/dashboard.css";
 import jsPDF from 'jspdf';
-import 'jspdf-autotable';
+import autoTable from 'jspdf-autotable';
 import axios from "axios";
+import {addHeaderLogo, calculateTotals} from '@/../utills/pdfUtils';
+
 
 export default {
   name: "DashboardView",
@@ -202,10 +207,10 @@ export default {
       from: "",
       billTo: "",
       shipTo: "",
-      date: new Date(Date.now()),
+      date: new Date().toISOString().split('T')[0],
       email: '',
       dueDate: "",
-      notes: "",
+      TaxNO: "",
       terms: "",
       taxRate: 0,
       discount: 0,
@@ -343,7 +348,7 @@ isValidEmail(email) {
       formData.append("date", this.date);
       formData.append("email", this.email || "");
       formData.append("dueDate", this.dueDate);
-      formData.append("notes", this.notes.trim()==="" ? "NA" : this.notes);
+      formData.append("TaxNO", this.TaxNO.trim()==="" ? "NA" : this.TaxNO);
       formData.append("terms", this.terms.trim()==="" ? "NA" : this.terms);
       formData.append("taxRate", this.taxRate);
       formData.append("discount", this.discount);
@@ -411,155 +416,199 @@ isValidEmail(email) {
         alert("Please fill all required fields!");
         return null; // Stop execution if validation fails
       }
-
+      
       // Step 5: PDF generation if no errors
       try {
         const doc = new jsPDF();
         const pageWidth = doc.internal.pageSize.getWidth();
         const pageHeight = doc.internal.pageSize.getHeight();
-        const margin = 20;
+        const margin = 10;
         let yPosition = margin;
 
         // Add header logo
-        if (this.logoData && this.logoData.base64) {
-          try {
-            doc.addImage(
-              this.logoData.base64,
-              'JPEG',
-              margin,
-              yPosition,
-              40,
-              40,
-              undefined,
-              'FAST'
-            );
-          } catch (logoError) {
-            console.warn('Logo could not be added:', logoError);
-          }
-        }
+        addHeaderLogo(doc, this.logoData, 10, 10); // margin = 10, yPosition = 10
 
-        // Header Section
-        doc.setFont("helvetica", "bold");
-        doc.setFontSize(24);
-        doc.text('INVOICE', pageWidth / 2, margin + 10, { align: 'center' });
+       // === Center: TAX INVOICE ===
+doc.setFont('helvetica', 'bold');
+doc.setFontSize(24);
+doc.setTextColor(0, 0, 0);
+doc.text('TAX INVOICE', pageWidth / 2, yPosition + 5, { align: 'center' });
 
         // setting font size and font type
-        doc.setFontSize(10);
+        doc.setFontSize(12);
         doc.setFont("helvetica", "normal");
 
         // Invoice Details
-        yPosition = margin + 20;
-        doc.text(`Invoice Number: ${this.invoiceNumber}`, pageWidth - 80, yPosition);
-        doc.text(`Date: ${this.date}`, pageWidth - 80, yPosition + 10);
-        doc.text(`Due Date: ${this.dueDate}`, pageWidth - 80, yPosition + 20);
+        const invoiceY = yPosition + 1; // start close to TAX INVOICE line
+const rightX = pageWidth - margin;
 
-        // From Section
-        yPosition = 90;
-        doc.setFontSize(12);
-        doc.text('From:', margin, yPosition);
-        doc.setFontSize(10);
-        doc.text(this.from || 'N/A', margin, yPosition + 10);
+doc.setFontSize(10); // smaller than title
 
-        // Bill To & Ship To
-        yPosition = 120;
-        doc.setFontSize(12);
-        doc.text('Bill To:', margin, yPosition);
-        doc.text('Ship To:', pageWidth / 2, yPosition);
+doc.text(`Invoice Number: ${this.invoiceNumber}`, rightX, invoiceY, { align: 'right' });
+doc.text(`Bill Date: ${this.date}`, rightX, invoiceY + 8, { align: 'right' });
+doc.text(`Due Date: ${this.dueDate}`, rightX, invoiceY + 16, { align: 'right' });
+// Table Data (dynamically from your component props or data)
+const fromData = this.from || 'N/A';
+const billToData = this.billTo || 'N/A';
+const shipToData = this.shipTo || 'N/A';
+const taxNumber = this.TaxNO || 'N/A'; // New field
 
-        doc.setFontSize(10);
-        doc.text(this.billTo || 'N/A', margin, yPosition + 10);
-        doc.text(this.shipTo || 'N/A', pageWidth / 2, yPosition + 10);
 
-        // Table Section
-        yPosition = 150;
-        const tableTop = yPosition;
-        const columns = ['Description', 'Quantity', 'Rate', 'Amount'];
-        const columnWidths = [80, 30, 30, 30];
-        const startX = margin;
-        const rowHeight = 10;
+const leftMargin = 10;
+const rightMargin = 10;
+// ✅ Use the global `pageWidth` (do not re-declare!)
+const tableWidth = pageWidth - leftMargin - rightMargin;
+const tableStartX = leftMargin; // ✅ Rename to avoid conflict
 
-        // Draw Table Header
-        doc.setFillColor(70, 78, 95);
-        doc.setTextColor(255);
-        doc.rect(startX, tableTop, pageWidth - margin * 2, rowHeight, 'F');
-        let xPos = startX;
-        columns.forEach((col) => {
-          doc.text(col, xPos + 2, tableTop + 7);
-          xPos += columnWidths[columns.indexOf(col)];
-        });
+const tableHead = [
+  [
+    { content: 'Sender', styles: { fontStyle: 'bold', fillColor: '#4078c0', textColor: '#ffffff' } },
+    { content: 'Bill To', styles: { fontStyle: 'bold', fillColor: '#4078c0', textColor: '#ffffff' } },
+    { content: 'Ship To', styles: { fontStyle: 'bold', fillColor: '#4078c0', textColor: '#ffffff' } },
+    { content: 'Client VAT or PAN', styles: { fontStyle: 'bold', fillColor: '#4078c0', textColor: '#ffffff' } }
+  ]
+];
 
-        // Draw Table Rows with Alternate Shading
-        doc.setTextColor(0);
-        yPosition = tableTop + rowHeight;
+const tableBody = [
+  [
+    { content: fromData },
+    { content: billToData },
+    { content: shipToData },
+    { content: taxNumber }
+  ]
+];
 
-        this.items.forEach((item, index) => {
-          xPos = startX;
-          const isEven = index % 2 === 0;
-          if (isEven) doc.setFillColor(240); // Light gray
-          else doc.setFillColor(255); // White
-          doc.rect(startX, yPosition, pageWidth - margin * 2, rowHeight, 'F');
+// jsPDF-AutoTable call
+autoTable(doc, {
+  startY: 60,
+  margin: { left: tableStartX, right: rightMargin },
+  tableWidth: tableWidth,
+  head: tableHead,
+  body: tableBody,
+  styles: {
+    halign: 'left',
+    valign: 'top',
+    fontSize: 10,
+    cellPadding: 4,
+    lineWidth: 0.1,
+    lineColor: [0, 0, 0]
+  },
+  
+});
+     // Define table columns (including S.NO)
+const columns = [
+  { header: 'S.NO', dataKey: 'sno' },
+  { header: 'Description', dataKey: 'description' },
+  { header: 'Quantity', dataKey: 'quantity' },
+  { header: 'Rate', dataKey: 'rate' },
+  { header: 'Amount', dataKey: 'amount' },
+];
 
-          columns.forEach((_, colIndex) => {
-            doc.rect(xPos, yPosition, columnWidths[colIndex], rowHeight);
-            xPos += columnWidths[colIndex];
-          });
+// Prepare table rows with S.NO
+const rows = this.items.map((item, index) => ({
+  sno: index + 1,
+  description: item.description || '',
+  quantity: item.quantity || 0,
+  rate: this.formattedAmount(item.rate || 0),
+  amount: this.formattedAmount(item.amount || 0),
+}));
 
-          xPos = startX;
-          doc.text(item.description || '', xPos + 2, yPosition + 7);
-          xPos += columnWidths[0];
+// Create the table
+autoTable(doc, {
+  startY: 100, // Adjusted to avoid overlap with previous content
+  
+  head: [columns.map(col => col.header)],
+  body: rows.map(row => columns.map(col => row[col.dataKey])),
+  styles: {
+    fontSize: 10,
+    cellPadding: 3,
+  },
+  headStyles: {
+    fillColor: [70, 78, 95],
+    textColor: 255,
+    fontStyle: 'bold',
+  },
+  alternateRowStyles: { fillColor: [240, 240, 240] },
+  margin: { left: 10, right: 10 },
+  theme: 'striped',
+});
 
-          doc.text(item.quantity?.toString() || '0', xPos + 2, yPosition + 7);
-          xPos += columnWidths[1];
+// 1. Calculate totals (this can be in utils if you'd like)
+const { totalQuantity, totalAmount } = calculateTotals(this.items);
 
-          doc.text(this.formattedAmount(item.rate || 0), xPos + 2, yPosition + 7);
-          xPos += columnWidths[2];
+// 2. Define the summary as key-value pairs
+const summaryData = [
+  ['Total Qty', totalQuantity],
+  ['Taxable Amount', this.formattedAmount(totalAmount)],
+  ['Tax (%)', `${this.taxRate || 0}%`],
+  ['Discount', this.formattedAmount(this.discount || 0)],
+  ['Shipping', this.formattedAmount(this.shipping || 0)],
+  ['Total', this.formattedAmount(this.total || 0)],
+  ['Amount Paid', this.formattedAmount(this.amountPaid || 0)],
+  ['Balance Due', this.formattedAmount(this.balanceDue || 0)],
+];
 
-          doc.text(this.formattedAmount(item.amount || 0), xPos + 2, yPosition + 7);
+// 3. Render the horizontal table (2 columns)
+doc.autoTable({
+  startY: doc.lastAutoTable.finalY + 10,
+  head: [['Label', 'Value']],
+  body: summaryData,
+  styles: {
+    halign: 'left',
+    cellPadding: { left: 10, right: 10 },
+    fontSize: 10,
+    textColor: 20,
+  },
+  headStyles: {
+    fillColor: [40, 60, 100],
+    textColor: 255,
+    halign: 'center',
+  },
+  columnStyles: {
+    0: { cellWidth: 60 },  // Label column
+    1: { cellWidth: 60 },  // Value column
+  },
+});
 
-          yPosition += rowHeight;
-        });
 
-        // Summary Section
-        yPosition += 20;
-        const summaryXRight = pageWidth - margin;
-        let summaryY = yPosition;
+// Terms and Conditions Section
+let summaryMarginLeft = 15; // default fallback
+let summaryTableWidth = 160; // default fallback
 
-        const addSummaryLineRight = (label, value) => {
-          const labelWidth = doc.getTextWidth(label);
-          const valueWidth = doc.getTextWidth(value);
-          doc.text(label, summaryXRight - labelWidth - 50, summaryY);
-          doc.text(value, summaryXRight - valueWidth, summaryY);
-          summaryY += 8;
-        };
+if (doc.lastAutoTable && doc.lastAutoTable.table) {
+  summaryMarginLeft = doc.lastAutoTable.settings.margin.left;
+  summaryTableWidth = doc.lastAutoTable.table.width;
+}
 
-        doc.setFontSize(10);
-        addSummaryLineRight('Subtotal:', this.formattedAmount(this.subtotal || 0));
-        addSummaryLineRight('Tax:', `${this.taxRate || 0}%`);
-        addSummaryLineRight('Discount:', this.formattedAmount(this.discount || 0));
-        addSummaryLineRight('Shipping:', this.formattedAmount(this.shipping || 0));
-        doc.setFontSize(11);
-        addSummaryLineRight('Total:', this.formattedAmount(this.total || 0));
-        addSummaryLineRight('Amount Paid:', this.formattedAmount(this.amountPaid || 0));
-        doc.setFontSize(12);
-        addSummaryLineRight('Balance Due:', this.formattedAmount(this.balanceDue || 0));
+const summaryBottomY = doc.lastAutoTable ? doc.lastAutoTable.finalY : 0;
+if (this.terms) {
+  const splitTerms = doc.splitTextToSize(this.terms, summaryTableWidth - 20);
 
-        // Notes and Terms Section
-        summaryY = yPosition;
-        if (this.notes) {
-          doc.setFontSize(11);
-          const splitNotes = doc.splitTextToSize(this.notes, pageWidth - margin * 2);
-          doc.text('Notes:', margin, summaryY);
-          doc.text(splitNotes, margin, summaryY + 10);
-          summaryY += splitNotes.length * 5 + 10;
-        }
-
-        if (this.terms) {
-          doc.setFontSize(11);
-          const splitTerms = doc.splitTextToSize(this.terms, pageWidth - margin * 2);
-          doc.text('Terms & Conditions:', margin, summaryY);
-          doc.text(splitTerms, margin, summaryY + 10);
-        }
-
+  doc.autoTable({
+    startY: summaryBottomY + 10,
+    head: [['Terms & Conditions']],
+    body: splitTerms.map(line => [line]),
+    margin: { left: summaryMarginLeft },
+    tableWidth: summaryTableWidth,
+    styles: {
+      fontSize: 10,
+      textColor: 20,
+      cellPadding: { left: 5, right: 5 },
+    },
+    headStyles: {
+      fillColor: [40, 60, 100],
+      textColor: 255,
+      fontStyle: 'bold',
+      halign: 'center',
+    },
+    bodyStyles: {
+      halign: 'left',
+    },
+    columnStyles: {
+      0: { cellWidth: summaryTableWidth - 20 },
+    },
+  });
+}
         // Footer Section
         const footerY = pageHeight - 20; // Fixed position at bottom
         doc.setFontSize(10);
@@ -588,7 +637,7 @@ isValidEmail(email) {
       this.date = "";
       this.email = "";
       this.dueDate = "";
-      this.notes = "";
+      this.TaxNO = "";
       this.terms = "";
       this.taxRate = 0;
       this.discount = 0;

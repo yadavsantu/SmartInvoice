@@ -10,7 +10,7 @@ const Invoices = new Schema({
   date: { type: Date, required: true },
   email: { type: String, required: false },
   dueDate: { type: Date, required: true },
-  notes: { type: String, default: "None" },
+  TaxNO: { type: String, default: "None" },
   terms: { type: String, default: "None" },
   taxRate: { type: String, required: true },
   discount: { type: String, required: true },

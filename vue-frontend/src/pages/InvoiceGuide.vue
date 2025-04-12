@@ -49,11 +49,11 @@
                         <p>Specify the payment due date. This helps in ensuring timely payments.</p>
                     </li>
                     <li>
-                        <h3>Notes</h3>
-                        <p>Add any additional notes or comments for the recipient.</p>
+                        <h3>TaxNO</h3>
+                        <p>Add any client's VAT No. or PAN No.</p>
                     </li>
                     <li>
-                        <h3>Terms</h3>
+                        <h3>Terms and conditions</h3>
                         <p>Specify the terms and conditions of the invoice, such as payment terms, late fees, etc.</p>
                     </li>
                     <li>
