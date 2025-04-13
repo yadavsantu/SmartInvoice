@@ -91,6 +91,7 @@
 import NavBar from "../components/navBar.vue";
 import FooterComponent from "../components/FooterComponent.vue";
 import axios from "axios";
+import Swal from "sweetalert2";
 
 export default {
   name: "LoginDashboard",
@@ -141,26 +142,51 @@ export default {
       const selectedInvoice = this.invoices[index];
 
       if (!selectedInvoice || !selectedInvoice.invoiceNumber) {
-        alert("Invalid invoice selection");
+         // SweetAlert2 error notification
+    Swal.fire({
+      icon: 'error',
+      title: 'Invalid Invoice',
+      text: 'Invalid invoice selection.',
+    });
         return;
       }
 
       if (selectedInvoice.status === "Paid") {
-        alert("Invoice is already paid");
+         // SweetAlert2 info notification
+    Swal.fire({
+      icon: 'info',
+      title: 'Already Paid',
+      text: 'This invoice is already marked as paid.',
+    });
         return;
       }
 
 
-      if (!confirm(`Are you sure you want to update the status for invoice no ${selectedInvoice.invoiceNumber}?`)) {
-        return;
-      }
+      const confirmation = await Swal.fire({
+    icon: 'warning',
+    title: 'Are you sure?',
+    text: `Do you want to update the status for invoice no ${selectedInvoice.invoiceNumber}?`,
+    showCancelButton: true,
+    confirmButtonText: 'Yes, update it!',
+    cancelButtonText: 'Cancel',
+  });
+
+  if (!confirmation.isConfirmed) {
+    return;
+  }
+
 
       try {
         const invoiceId = selectedInvoice._id;
         const accessToken = localStorage.getItem("refreshToken") || localStorage.getItem("accessToken");
 
         if (!accessToken) {
-          alert("User is not authenticated. Please log in.");
+           // SweetAlert2 error notification
+      Swal.fire({
+        icon: 'error',
+        title: 'Authentication Failed',
+        text: 'User is not authenticated. Please log in.',
+      });
           return;
         }
 
@@ -171,25 +197,60 @@ export default {
         );
 
         if (response.status === 200) {
-          alert("Invoice status successfully updated!");
+           // SweetAlert2 success notification
+      Swal.fire({
+        icon: 'success',
+        title: 'Success!',
+        text: 'Invoice status successfully updated!',
+      });
           await this.loadInvoices(); // Refresh invoice list
         }
       } catch (error) {
         console.error("Error updating invoice:", error);
         if (error.response) {
           if (error.response.status === 400) {
-            alert("Invalid Invoice ID. Please check again.");
+            // SweetAlert2 error notification
+        Swal.fire({
+          icon: 'error',
+          title: 'Invalid Invoice ID',
+          text: 'Please check the invoice ID and try again.',
+        });
           } else if (error.response.status === 403) {
-            alert("Authentication failed. Please log in again.");
+             // SweetAlert2 error notification
+        Swal.fire({
+          icon: 'error',
+          title: 'Authentication Failed',
+          text: 'Please log in again.',
+        });
           } else if (error.response.status === 500) {
-            alert("Server error. Please try again later.");
+              // SweetAlert2 error notification
+        Swal.fire({
+          icon: 'error',
+          title: 'Server Error',
+          text: 'An error occurred on the server. Please try again later.',
+        });
           } else {
-            alert(`Error: ${error.response.data.message || "Failed to update invoice"}`);
+             // SweetAlert2 error notification
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: error.response.data.message || 'Failed to update invoice.',
+        });
           }
         } else if (error.request) {
-          alert("No response from server. Please check your internet connection.");
+           // SweetAlert2 error notification
+      Swal.fire({
+        icon: 'error',
+        title: 'No Response',
+        text: 'No response from the server. Please check your internet connection.',
+      });
         } else {
-          alert("Unexpected error occurred. Please try again.");
+          // SweetAlert2 error notification
+      Swal.fire({
+        icon: 'error',
+        title: 'Unexpected Error',
+        text: 'An unexpected error occurred. Please try again.',
+      });
         }
       }
     },

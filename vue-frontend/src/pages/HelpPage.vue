@@ -128,7 +128,7 @@
   <script>
   import NavBar from "../components/navBar.vue";
   import FooterComponent from "../components/FooterComponent.vue";
-  
+  import Swal from "sweetalert2";
   export default {
     name: "HelpPage",
     components: {
@@ -159,16 +159,31 @@
         });
 
         if (response.ok) {
-          alert("Thank you for reaching out! We'll get back to you shortly.");
+          // SweetAlert2 success notification
+        Swal.fire({
+          icon: 'success',
+          title: 'Thank You!',
+          text: "Thank you for reaching out! We'll get back to you shortly.",
+        });
           this.form.name = "";
           this.form.email = "";
           this.form.message = "";
         } else {
-          alert("Error submitting the form. Please try again.");
+          // SweetAlert2 error notification
+        Swal.fire({
+          icon: 'error',
+          title: 'Submission Failed',
+          text: 'Error submitting the form. Please try again.',
+        });
         }
       } catch (error) {
         console.error("Submission Error:", error);
-        alert("There was an error. Please try again later.");
+       // SweetAlert2 error notification
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'There was an error. Please try again later.',
+      });
       }
     },
     },

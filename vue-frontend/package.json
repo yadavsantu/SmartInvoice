@@ -17,11 +17,14 @@
     "jspdf": "^2.5.2",
     "jspdf-autotable": "^3.8.4",
     "nodemon": "^3.1.7",
+    "notyf": "^3.10.0",
     "pdfkit": "^0.16.0",
     "pinia": "^2.3.1",
+    "sweetalert2": "^11.17.2",
     "vite": "^6.0.11",
     "vue": "^3.5.13",
-    "vue-router": "^4.0.13"
+    "vue-router": "^4.0.13",
+    "vue-toastification": "^2.0.0-rc.5"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",

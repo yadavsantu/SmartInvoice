@@ -47,6 +47,7 @@
 <script>
 import axios from "axios";
 import { useUserNameStore } from "@/stores/userNameStore";
+import Swal from "sweetalert2";
 
 export default {
   name: "LoginPage",
@@ -122,7 +123,13 @@ export default {
             localStorage.setItem("refreshToken", refreshToken);
           }
 
-          alert("Login Successful!");
+          // SweetAlert2 success notification
+      Swal.fire({
+        icon: 'success',
+        title: 'Login Successful!',
+        text: 'Welcome back to your account.',
+      });
+
           this.$router.push("/dashboard");
         }
       } catch (error) {
