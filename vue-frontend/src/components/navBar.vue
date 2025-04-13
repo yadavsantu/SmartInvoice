@@ -60,12 +60,17 @@ export default {
 
     // Handle Logout
     async handleLogout() {
-      this.userStore.clearUserName(); // ✅ Reset username
+
+      const conf =  confirm("Are you sure you want to log out?");
+      if(!conf) return; 
+      this.isLoggedIn = false; 
+      this.userStore.clearUserName(); 
       localStorage.removeItem("accessToken");
       localStorage.removeItem("refreshToken");
       localStorage.removeItem("userName");
       alert("Logged out!");
       this.$router.push("/LoginPage");
+      
     },
 
     // Redirect to Login Page
