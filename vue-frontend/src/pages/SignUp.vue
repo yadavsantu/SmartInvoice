@@ -245,6 +245,7 @@ button:hover {
 
 <script>
 import axios from 'axios';
+import Swal from 'sweetalert2';
 
 export default {
   name: "SignUp",
@@ -301,23 +302,39 @@ export default {
             const encodedEmail = response.data.signedEmail;
             console.log(encodedEmail)
             localStorage.setItem("encodedEmail",encodedEmail);
-            alert("User Registration SucessFull")
+            // SweetAlert2 success notification
+      Swal.fire({
+        icon: 'success',
+        title: 'Registration Successful!',
+        text: 'Your account has been created successfully. Please verify your email.',
+      });
             this.$router.push('/verifyOtp')
           }
 
 
         }
       } catch (error) {
+    if (error.response && error.response.status === 409) {
+      
 
-        if (error.response && error.response.status === 409) { this.errorMessage = "Email already exist Please Use Different Email Address" }
+      // SweetAlert2 error notification
+      Swal.fire({
+        icon: 'error',
+        title: 'Email Already Exists',
+        text: 'Please use a different email address.',
+      });
+    } else {
+      console.log(error);
+      this.errorMessage = "User registration failed.";
 
-        else {
-          console.log(error)
-          this.errorMessage = "User Registration Failled ";
-        }
-
-
-      }
+      // SweetAlert2 error notification
+      Swal.fire({
+        icon: 'error',
+        title: 'Registration Failed',
+        text: 'An error occurred during registration. Please try again later.',
+      });
+    }
+  }
     },
   },
 }

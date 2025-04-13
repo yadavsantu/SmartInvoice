@@ -188,6 +188,8 @@ import LogoPlaceholder from "../components/LogoPlaceholder.vue";
 import "../assets/css/dashboard.css";
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import Swal from 'sweetalert2';
+
 import axios from "axios";
 import {addHeaderLogo, calculateTotals} from '@/../utills/pdfUtils';
 
@@ -239,6 +241,7 @@ export default {
     };
   },
   methods: {
+    
     handleLogoUploaded(logoData) {
       this.logoData = logoData;
     },
@@ -249,7 +252,7 @@ export default {
     validateField(field) {
   if (field === "invoiceNumber" && !Number.isInteger(Number(this.invoiceNumber))) {
     this.errors.invoiceNumber = "Invoice Number must be an integer";
-  } else if (field === "from" && !/^[a-zA-Z0-9\s,-]+$/.test(this.from)) {
+  } else if (field === "from" && !/^[a-zA-Z0-9\s&@#,-]+$/.test(this.from)) {
     this.errors.from = "Sender's name must be a valid string";
   } else if (field === "discount" && this.discount < 0) {
     this.errors.discount = "Discount cannot be negative";
@@ -316,11 +319,19 @@ isValidEmail(email) {
           link.href = URL.createObjectURL(pdfBlob);
           link.download = fileName;
           link.click();
-          alert('PDF generated and downloaded successfully!');
+          Swal.fire({
+  icon: 'success',
+  title: 'PDF Downloaded',
+  text: 'PDF generated and downloaded successfully!',
+});
         }
       } catch (error) {
         console.error('PDF Download Error:', error);
-        alert(`Error downloading PDF: ${error.message}`);
+        Swal.fire({
+  icon: 'error',
+  title: 'Error',
+  text: `Error downloading PDF: ${error.message}`,
+});
       }
     },
 
@@ -330,13 +341,24 @@ isValidEmail(email) {
       const accessToken = localStorage.getItem("refreshToken") || localStorage.getItem("accessToken");
 
       if (!accessToken) {
-        alert("Please LogIn First");
+        //SweetAlert for unauthorized access
+        Swal.fire({
+
+          icon: 'error',
+          title: 'Unauthorized',
+          text: 'Please LogIn First',
+        });
         return;
       }
         // ✅ Check if email is empty
   if (!this.email || this.email.trim() === "") {
-    alert("Please enter a valid email address before sending the invoice.");
+    Swal.fire({
+      icon: 'warning',
+      title: 'Email Required',
+      text: 'Please enter an email address to send the invoice.',
+    });
     return;
+    
   }
 
 
@@ -371,15 +393,31 @@ isValidEmail(email) {
           }
         });
         if (response.status == 200) {
-          alert("Invoice Sent via email");
+          // SweetAlert for successful email sending
+          Swal.fire({
+            icon: 'success',
+            title: 'Success',
+            text: 'Invoice sent successfully!',
+          });
+          
           this.clearForm();
         }
       } catch (error) {
         if (error.response && error.response.data && error.response.data.error) {
           const errorMessage = error.response.data.error.map(err => err.message).join(", ");
-          alert("Failed to send the invoice: " + errorMessage);
+         // SweetAlert2 error alert
+      Swal.fire({
+        icon: 'error',
+        title: 'Failed to Send Invoice',
+        text: errorMessage,
+      });
         } else {
-          alert("An unknown error occurred: " + error.message);
+          // SweetAlert2 error alert
+      Swal.fire({
+        icon: 'error',
+        title: 'Unknown Error',
+        text: `An unknown error occurred: ${error.message}`,
+      });
         }
       }
     },
@@ -388,7 +426,7 @@ isValidEmail(email) {
       // Step 1: Perform validation checks and update errors object
       this.errors = {
         invoiceNumber: this.invoiceNumber === "" || !Number.isInteger(Number(this.invoiceNumber)) ? "Invoice Number must be an integer" : false,
-        from: this.from === "" || !/^[a-zA-Z0-9\s,-]+$/.test(this.from) ? "Sender's name must be a valid string" : false,
+        from: this.from === "" || !/^[a-zA-Z0-9\s,&@-]+$/.test(this.from) ? "Sender's name must be a valid string" : false,
         billTo: this.billTo === "" ? "Receiver's name is required" : false,
         date: this.date === "" ? "Date is required" : false,
         dueDate: this.dueDate === "" ? "Due Date is required" : false,
@@ -413,7 +451,13 @@ isValidEmail(email) {
 
       // Step 4: If there are any errors, stop the PDF generation and alert the user
       if (hasTopLevelErrors || hasItemErrors) {
-        alert("Please fill all required fields!");
+
+        // SweetAlert2 warning alert
+    Swal.fire({
+      icon: 'warning',
+      title: 'Validation Error',
+      text: 'Please fill all required fields!',
+    });
         return null; // Stop execution if validation fails
       }
       
@@ -623,7 +667,12 @@ if (this.terms) {
 
       } catch (error) {
         console.error('PDF Generation Error:', error);
-        alert(`Error generating PDF: ${error.message}`);
+        // SweetAlert2 error alert
+    Swal.fire({
+      icon: 'error',
+      title: 'PDF Generation Error',
+      text: `Error generating PDF: ${error.message}`,
+    });
         return null;
       }
     },

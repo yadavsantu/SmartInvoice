@@ -49,8 +49,8 @@
                         <p>Specify the payment due date. This helps in ensuring timely payments.</p>
                     </li>
                     <li>
-                        <h3>TaxNO</h3>
-                        <p>Add any client's VAT No. or PAN No.</p>
+                        <h3>VAT or PAN No</h3>
+                        <p>Add client's VAT No. or PAN No.</p>
                     </li>
                     <li>
                         <h3>Terms and conditions</h3>
