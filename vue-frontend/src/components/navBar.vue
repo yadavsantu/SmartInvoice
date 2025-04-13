@@ -35,6 +35,7 @@
 <script>
 
 import { useUserNameStore } from "@/stores/userNameStore"; 
+import Swal from "sweetalert2"; 
 
 
 export default {
@@ -60,16 +61,32 @@ export default {
 
     // Handle Logout
     async handleLogout() {
+      //show sweet alert
 
-      const conf =  confirm("Are you sure you want to log out?");
-      if(!conf) return; 
+      const conf =  await Swal.fire({
+        title: "Are you sure?",
+        text: "You want to log out?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Yes, log out!",
+        cancelButtonText: "No, stay logged in",
+      });
+      if (conf.isDismissed){
+        return;// User canceled the logout
+      }
+     
       this.isLoggedIn = false; 
       this.userStore.clearUserName(); 
       localStorage.removeItem("accessToken");
       localStorage.removeItem("refreshToken");
       localStorage.removeItem("userName");
-      alert("Logged out!");
-      this.$router.push("/LoginPage");
+
+      Swal.fire({
+        icon: "success",
+        title: "Logged out",
+        text: "You have been logged out successfully.",
+      });
+      this.$router.push("/");
       
     },
 
