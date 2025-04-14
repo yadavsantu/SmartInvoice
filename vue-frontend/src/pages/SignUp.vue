@@ -278,12 +278,22 @@ export default {
       const Retype_password = this.repeat_password;
       this.errorMessage= ""
       if (Password.length < 6) {
-        this.errorMessage = "Password length should be at least 6 characters"
+        // SweetAlert2 error notification
+    Swal.fire({
+      icon: 'error',
+      title: 'Invalid Password',
+      text: 'Password length should be at least 6 characters.',
+    });
         return;
       }
 
       if (Password != Retype_password) {
-        this.errorMessage = "Password Do not match. Please check your password";
+         // SweetAlert2 error notification
+    Swal.fire({
+      icon: 'error',
+      title: 'Password Mismatch',
+      text: 'Passwords do not match. Please check your password.',
+    });
         return;
       }
 

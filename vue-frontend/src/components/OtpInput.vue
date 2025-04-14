@@ -12,6 +12,7 @@
 
 <script>
 import axios from 'axios';
+import Swal from 'sweetalert2';
 export default {
   data() {
     return {
@@ -23,31 +24,51 @@ export default {
       this.otp = this.otp.replace(/[^0-9]/g, "").slice(0, 6); // Ensure only numbers and max 6 digits
     },
     async verifyOtp() {
-      if (this.otp.length === 6) {
+  if (this.otp.length !== 6) {
+    // SweetAlert2 error notification for invalid OTP length
+    Swal.fire({
+      icon: 'error',
+      title: 'Invalid OTP',
+      text: 'Please enter a 6-digit OTP.',
+    });
+    return;
+  }
 
-        try {
-          const encodedEmail = localStorage.getItem("encodedEmail");
-          const response = await axios.post("http://localhost:8080/api/v1/verifyOtp", {
-            otp: this.otp, encodedEmail
-          })
-          if (response.status === 201) {
-            alert("Otp Verified Success");
-            this.$router.push("LoginPage");
-          }
-          else {
-            alert("Invalid OTP");
-            console.log("Otp Verification UnsucessFull")
-          }
+  try {
+    const encodedEmail = localStorage.getItem("encodedEmail");
+    const response = await axios.post("http://localhost:8080/api/v1/verifyOtp", {
+      otp: this.otp,
+      encodedEmail,
+    });
 
-        } catch (error) {
-          console.log(error)
-        }
+    if (response.status === 201) {
+      // SweetAlert2 success notification for successful OTP verification
+      Swal.fire({
+        icon: 'success',
+        title: 'OTP Verified',
+        text: 'Your OTP has been successfully verified!',
+      });
+      this.$router.push("LoginPage");
+    } else {
+      // SweetAlert2 error notification for invalid OTP
+      Swal.fire({
+        icon: 'error',
+        title: 'Invalid OTP',
+        text: 'The OTP you entered is incorrect. Please try again.',
+      });
+      console.log("OTP Verification Unsuccessful");
+    }
+  } catch (error) {
+    console.error("Error during OTP verification:", error);
 
-
-      } else {
-        alert("Please enter a 6-digit OTP."); 
-      }
-    },
+    // SweetAlert2 error notification for server or network errors
+    Swal.fire({
+      icon: 'error',
+      title: 'Verification Failed',
+      text: 'An error occurred while verifying the OTP. Please try again later.',
+    });
+  }
+},
   },
 };
 </script>

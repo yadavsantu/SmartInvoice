@@ -61,6 +61,7 @@
 
 <script>
 import axios from 'axios';
+import Swal from 'sweetalert2';
 export default {
   data() {
     return {
@@ -82,19 +83,39 @@ export default {
         const response = await axios.post('http://localhost:8080/api/v1/verifyEmail', { email: this.email });
 
         if (response.status === 200) {
-          this.message = "OTP sent to email. Please check your inbox.";
+           // SweetAlert2 success notification
+      Swal.fire({
+        icon: 'success',
+        title: 'OTP Sent!',
+        text: 'OTP has been sent to your email. Please check your inbox.',
+      });
           this.isOtpEnabled = true; // Enable OTP and password fields
         } else {
-          this.message = "Unexpected error. Please try again.";
+          // SweetAlert2 error notification
+      Swal.fire({
+        icon: 'error',
+        title: 'Unexpected Error',
+        text: 'An unexpected error occurred. Please try again.',
+      });
         }
       } catch (error) {
         if (error.response && error.response.status === 409) {
           this.isOtpEnabled = true;
 
-          this.message = "OTP already sent. Please check your inbox.";
+           // SweetAlert2 info notification
+      Swal.fire({
+        icon: 'info',
+        title: 'OTP Already Sent',
+        text: 'An OTP has already been sent to your email. Please check your inbox.',
+      });
         } else {
           console.error("Error during OTP request:", error);
-          this.message = error.response.data.message;
+          // SweetAlert2 error notification
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: error.response?.data?.message || 'Failed to send OTP. Please try again.',
+      });
         }
       }
     },
@@ -108,7 +129,12 @@ export default {
     async resetPassword() {
       this.message = "";
       if (this.newPassword !== this.confirmPassword) {
-        this.message = "Passwords do not match.";
+         // SweetAlert2 error notification
+    Swal.fire({
+      icon: 'error',
+      title: 'Password Mismatch',
+      text: 'Passwords do not match. Please try again.',
+    });
         return;
       }
 
@@ -119,14 +145,24 @@ export default {
           email: this.email,
         });
         if (response.status === 200) {
-          alert("Password Changed Successfully");
+          // SweetAlert2 success notification
+      Swal.fire({
+        icon: 'success',
+        title: 'Password Changed!',
+        text: 'Your password has been changed successfully. You can now log in.',
+      });
           this.$router.push('LoginPage');
         }
 
 
       } catch (error) {
         alert("An error occurred while changing the password.");
-        this.message = error.data.message;
+        // SweetAlert2 error notification
+    Swal.fire({
+      icon: 'error',
+      title: 'Error',
+      text: error.response?.data?.message || 'An error occurred while changing the password. Please try again.',
+    });
         console.error("Error during password reset:", error);
       }
     },
