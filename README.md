@@ -106,7 +106,7 @@ npm run serve
  ```
 6.	Access the Application:
     •	Open your browser and navigate to:
-  	  https://smart-invoice-topaz.vercel.app
+  	  https://smartinvoice.onrender.com
 ## Contribution
 
 We welcome contributions! To contribute:

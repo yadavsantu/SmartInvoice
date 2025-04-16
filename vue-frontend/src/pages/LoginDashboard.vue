@@ -120,7 +120,7 @@ export default {
     async loadInvoices(query = "") {
       try {
         const accessToken = localStorage.getItem("refreshToken") || localStorage.getItem("accessToken");
-        const response = await axios.get("https://smart-invoice-topaz.vercel.app/api/v1/loadInvoice", {
+        const response = await axios.get("https://smartinvoice.onrender.com/api/v1/loadInvoice", {
           headers: { "Authorization": `Bearer ${accessToken}` },
           params: query ? { search: query } : {},
         });
@@ -191,7 +191,7 @@ export default {
         }
 
         const response = await axios.put(
-          `https://smart-invoice-topaz.vercel.app/api/v1/updateInvoice/${invoiceId}`,
+          `https://smartinvoice.onrender.com/api/v1/updateInvoice/${invoiceId}`,
           {},
           { headers: { Authorization: `Bearer ${accessToken}` } }
         );
@@ -262,7 +262,7 @@ export default {
 
       try {
         const response = await axios.get(
-          `https://smart-invoice-topaz.vercel.app/api/v1/download/${invoiceId}`,
+          `https://smartinvoice.onrender.com/api/v1/download/${invoiceId}`,
           { responseType: 'blob' }  // Ensures response is a file (blob)
         );
 

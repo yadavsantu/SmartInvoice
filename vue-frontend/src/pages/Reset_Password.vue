@@ -80,7 +80,7 @@ export default {
   methods: {
     async verifyEmail() {
       try {
-        const response = await axios.post('https://smart-invoice-topaz.vercel.app/api/v1/verifyEmail', { email: this.email });
+        const response = await axios.post('https://smartinvoice.onrender.com/api/v1/verifyEmail', { email: this.email });
 
         if (response.status === 200) {
            // SweetAlert2 success notification
@@ -139,7 +139,7 @@ export default {
       }
 
       try {
-        const response = await axios.post('https://smart-invoice-topaz.vercel.app/api/v1/ResetPassword', {
+        const response = await axios.post('https://smartinvoice.onrender.com/api/v1/ResetPassword', {
           otp: this.otp,
           password: this.newPassword,
           email: this.email,
