@@ -19,7 +19,7 @@ const morganFormat = ":method :url :status :response-time ms";
 
 app.use(
   cors({
-    origin: ["http://localhost:8082", "http://localhost:8081"],
+    origin: ["https://smart-invoice-7ws3.vercel.app/"],
     credentials: true,
   })
 );
