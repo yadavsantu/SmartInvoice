@@ -36,7 +36,7 @@ export default {
 
   try {
     const encodedEmail = localStorage.getItem("encodedEmail");
-    const response = await axios.post("smart-invoice-topaz.vercel.app/api/v1/verifyOtp", {
+    const response = await axios.post("https://smart-invoice-topaz.vercel.app/api/v1/verifyOtp", {
       otp: this.otp,
       encodedEmail,
     });

@@ -298,7 +298,7 @@ export default {
       }
 
       try {
-        const response = await axios.post("smart-invoice-topaz.vercel.app/api/v1/register", {
+        const response = await axios.post("https://smart-invoice-topaz.vercel.app/api/v1/register", {
           fullName: FullName,
           email: Email,
           password: Password,

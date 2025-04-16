@@ -13,7 +13,7 @@ async function checkAuthStatus() {
     {
         try
         {
-            const response = await axios.post('smart-invoice-topaz.vercel.app/api/v1/refresh',
+            const response = await axios.post('https://smart-invoice-topaz.vercel.app/api/v1/refresh',
                 {
                     token:refreshToken,
                 },

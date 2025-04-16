@@ -75,7 +75,7 @@ export default {
 
       try {
         const response = await axios.post(
-          "smart-invoice-topaz.vercel.app/api/v1/refresh",
+          "https://smart-invoice-topaz.vercel.app/api/v1/refresh",
           { token: localStorage.getItem("refreshToken") },
           { withCredentials: true }
         );
@@ -101,7 +101,7 @@ export default {
 
       try {
         const response = await axios.post(
-          "smart-invoice-topaz.vercel.app/api/v1/login",
+          "https://smart-invoice-topaz.vercel.app/api/v1/login",
           {
             email: this.email,
             password: this.password,
