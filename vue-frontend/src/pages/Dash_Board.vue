@@ -386,7 +386,7 @@ isValidEmail(email) {
         const pdfBlob = await this.generatePdf();
         
         formData.append("invoicePdf", pdfBlob, "invoice.pdf");
-        const response = await axios.post("http://localhost:8080/api/v1/sendInvoice", formData, {
+        const response = await axios.post("smart-invoice-topaz.vercel.app/api/v1/sendInvoice", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
             "Authorization": `Bearer ${accessToken}`

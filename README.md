@@ -106,7 +106,7 @@ npm run serve
  ```
 6.	Access the Application:
     •	Open your browser and navigate to:
-  	  http://localhost:8080
+  	  smart-invoice-topaz.vercel.app
 ## Contribution
 
 We welcome contributions! To contribute:
