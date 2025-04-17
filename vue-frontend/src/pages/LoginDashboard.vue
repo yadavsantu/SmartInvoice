@@ -348,6 +348,7 @@ export default {
   width: 100%;
   margin-top: 80px;
   box-sizing: border-box;
+  padding-bottom: 120px;
 
 }
 
@@ -469,10 +470,13 @@ button:hover {
 }
 
 .no-history {
-  text-align: center;
-  margin-top: 20px;
-  font-size: 16px;
-  color: #666;
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 18px;
+  color: #444;
+  padding: 50px 0;
 }
 
 /* Responsive Media Queries */
