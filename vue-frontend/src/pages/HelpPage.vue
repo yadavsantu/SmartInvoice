@@ -193,12 +193,15 @@
   <style scoped>
   /* General Styles */
   .help-page-container {
-    font-family: "Arial", sans-serif;
-    color: #333;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 80px;
-  }
+  font-family: "Arial", sans-serif;
+  color: #333;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 80px 20px 100px 20px; /* extra bottom padding for footer */
+  box-sizing: border-box;
+  min-height: 100vh;
+  position: relative;
+}
   
   .main-content {
     padding: 20px;
