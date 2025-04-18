@@ -39,11 +39,11 @@
               <div v-if="errors.shipTo" class="error-message">{{ errors.shipTo }}</div>
             </div>
             <div class="TaxNO">
-            <label>VAT or PAN No</label>
-            <input type="text" placeholder="Enter customer's VAT or PAN no" v-model="TaxNO" :class="{ 'input-error': errors.TaxNO }"
-                @blur="validateField('shipTo')" />
-                
-          </div>
+              <label>VAT or PAN No</label>
+              <input type="text" placeholder="Enter customer's VAT or PAN no" v-model="TaxNO"
+                :class="{ 'input-error': errors.TaxNO }" @blur="validateField('shipTo')" />
+
+            </div>
           </div>
 
           <div class="form-group double">
@@ -53,15 +53,11 @@
               <div v-if="errors.date" class="error-message">{{ errors.date }}</div>
             </div>
             <div>
-  <label> Enter Email(optional)</label>
-  <input 
-    type="email" 
-    v-model="email" 
-    :class="{ 'input-error': errors.email }"
-    @blur="validateField('email')" 
-  />
-  <div v-if="errors.email" class="error-message">{{ errors.email }}</div>
-</div>
+              <label> Enter Email(optional)</label>
+              <input type="email" v-model="email" :class="{ 'input-error': errors.email }"
+                @blur="validateField('email')" />
+              <div v-if="errors.email" class="error-message">{{ errors.email }}</div>
+            </div>
           </div>
 
           <div class="form-group">
@@ -90,7 +86,7 @@
                     :class="{ 'input-error': errors.items[index]?.description }"
                     @blur="validateItemField(index, 'description')" />
                   <div v-if="errors.items[index]?.description" class="error-message">{{ errors.items[index]?.description
-                    }}</div>
+                  }}</div>
                 </td>
                 <td>
                   <input v-model="item.quantity" type="number" value="1"
@@ -116,7 +112,7 @@
 
         <!-- Additional Fields -->
         <div class="additional-fields">
-          
+
           <div class="terms">
             <label>Terms and conditions</label>
             <textarea v-model="terms"
@@ -191,7 +187,7 @@ import autoTable from 'jspdf-autotable';
 import Swal from 'sweetalert2';
 
 import axios from "axios";
-import {addHeaderLogo, calculateTotals} from '@/../utills/pdfUtils';
+import { addHeaderLogo, calculateTotals } from '@/../utills/pdfUtils';
 
 
 export default {
@@ -241,7 +237,7 @@ export default {
     };
   },
   methods: {
-    
+
     handleLogoUploaded(logoData) {
       this.logoData = logoData;
     },
@@ -250,29 +246,29 @@ export default {
       this.logoData = null;
     },
     validateField(field) {
-  if (field === "invoiceNumber" && !Number.isInteger(Number(this.invoiceNumber))) {
-    this.errors.invoiceNumber = "Invoice Number must be an integer";
-  } else if (field === "from" && !/^[a-zA-Z0-9\s&@#,-]+$/.test(this.from)) {
-    this.errors.from = "Sender's name must be a valid string";
-  } else if (field === "discount" && this.discount < 0) {
-    this.errors.discount = "Discount cannot be negative";
-  } else if (field === "taxRate" && this.taxRate < 0) {
-    this.errors.taxRate = "Tax rate cannot be negative";
-  } else if (field === "email") {
-    if (this.email && !this.isValidEmail(this.email)) {
-      this.errors.email = "Enter a valid email address";
-    } else {
-      this.errors.email = false; // No error if empty or valid email
-    }
-  } else {
-    this.errors[field] = false;
-  }
-},
+      if (field === "invoiceNumber" && !Number.isInteger(Number(this.invoiceNumber))) {
+        this.errors.invoiceNumber = "Invoice Number must be an integer";
+      } else if (field === "from" && !/^[a-zA-Z0-9\s&@#,-]+$/.test(this.from)) {
+        this.errors.from = "Sender's name must be a valid string";
+      } else if (field === "discount" && this.discount < 0) {
+        this.errors.discount = "Discount cannot be negative";
+      } else if (field === "taxRate" && this.taxRate < 0) {
+        this.errors.taxRate = "Tax rate cannot be negative";
+      } else if (field === "email") {
+        if (this.email && !this.isValidEmail(this.email)) {
+          this.errors.email = "Enter a valid email address";
+        } else {
+          this.errors.email = false; // No error if empty or valid email
+        }
+      } else {
+        this.errors[field] = false;
+      }
+    },
 
-isValidEmail(email) {
-  const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-  return emailPattern.test(email);
-},
+    isValidEmail(email) {
+      const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+      return emailPattern.test(email);
+    },
     validateItemField(index, field) {
       if (this.items[index][field] === "") {
         this.errors.items[index] = this.errors.items[index] || {};
@@ -294,7 +290,7 @@ isValidEmail(email) {
     removeItem(index) {
       this.items.splice(index, 1);
     },
-   
+
 
 
     formattedAmount(amount) {
@@ -320,22 +316,22 @@ isValidEmail(email) {
           link.download = fileName;
           link.click();
           Swal.fire({
-  icon: 'success',
-  title: 'PDF Downloaded',
-  text: 'PDF generated and downloaded successfully!',
-});
+            icon: 'success',
+            title: 'PDF Downloaded',
+            text: 'PDF generated and downloaded successfully!',
+          });
         }
       } catch (error) {
         console.error('PDF Download Error:', error);
         Swal.fire({
-  icon: 'error',
-  title: 'Error',
-  text: `Error downloading PDF: ${error.message}`,
-});
+          icon: 'error',
+          title: 'Error',
+          text: `Error downloading PDF: ${error.message}`,
+        });
       }
     },
 
-    
+
 
     async sendEmail() {
       const accessToken = localStorage.getItem("refreshToken") || localStorage.getItem("accessToken");
@@ -350,16 +346,16 @@ isValidEmail(email) {
         });
         return;
       }
-        // ✅ Check if email is empty
-  if (!this.email || this.email.trim() === "") {
-    Swal.fire({
-      icon: 'warning',
-      title: 'Email Required',
-      text: 'Please enter an email address to send the invoice.',
-    });
-    return;
-    
-  }
+      // ✅ Check if email is empty
+      if (!this.email || this.email.trim() === "") {
+        Swal.fire({
+          icon: 'warning',
+          title: 'Email Required',
+          text: 'Please enter an email address to send the invoice.',
+        });
+        return;
+
+      }
 
 
       const formData = new FormData();
@@ -370,8 +366,8 @@ isValidEmail(email) {
       formData.append("date", this.date);
       formData.append("email", this.email || "");
       formData.append("dueDate", this.dueDate);
-      formData.append("TaxNO", this.TaxNO.trim()==="" ? "NA" : this.TaxNO);
-      formData.append("terms", this.terms.trim()==="" ? "NA" : this.terms);
+      formData.append("TaxNO", this.TaxNO.trim() === "" ? "NA" : this.TaxNO);
+      formData.append("terms", this.terms.trim() === "" ? "NA" : this.terms);
       formData.append("taxRate", this.taxRate);
       formData.append("discount", this.discount);
       formData.append("shipping", this.shipping);
@@ -380,11 +376,11 @@ isValidEmail(email) {
       formData.append("total", this.total);
       formData.append("items", JSON.stringify(this.items));
       formData.append("balanceDue", this.balanceDue);
-     
+
 
       try {
         const pdfBlob = await this.generatePdf();
-        
+
         formData.append("invoicePdf", pdfBlob, "invoice.pdf");
         const response = await axios.post("https://smartinvoice.onrender.com/api/v1/sendInvoice", formData, {
           headers: {
@@ -399,26 +395,39 @@ isValidEmail(email) {
             title: 'Success',
             text: 'Invoice sent successfully!',
           });
-          
+
           this.clearForm();
         }
       } catch (error) {
-        if (error.response && error.response.data && error.response.data.error) {
-          const errorMessage = error.response.data.error.map(err => err.message).join(", ");
-         // SweetAlert2 error alert
-      Swal.fire({
-        icon: 'error',
-        title: 'Failed to Send Invoice',
-        text: errorMessage,
-      });
-        } else {
-          // SweetAlert2 error alert
-      Swal.fire({
-        icon: 'error',
-        title: 'Unknown Error',
-        text: `An unknown error occurred: ${error.message}`,
-      });
+        let errorMessage = "Something went wrong while sending the invoice.";
+
+        if (error.response && error.response.data) {
+          const errData = error.response.data.error;
+
+          if (typeof errData === 'string') {
+            // Handle MongoDB duplicate key error (E11000)
+            if (errData.includes("E11000") && errData.includes("invoiceNumber")) {
+              errorMessage = "An invoice with this number already exists. Please use a unique invoice number.";
+            } else {
+              errorMessage = errData;
+            }
+          } else if (Array.isArray(errData)) {
+            // If it's an array of messages or objects
+            errorMessage = errData
+              .map(err => (typeof err === 'string' ? err : err.message || JSON.stringify(err)))
+              .join(", ");
+          } else if (typeof errData === 'object') {
+            // If it's a plain object
+            errorMessage = Object.values(errData).join(", ");
+          }
         }
+
+        // Show the error using SweetAlert2
+        Swal.fire({
+          icon: 'error',
+          title: 'Failed to Send Invoice',
+          text: errorMessage,
+        });
       }
     },
 
@@ -453,14 +462,14 @@ isValidEmail(email) {
       if (hasTopLevelErrors || hasItemErrors) {
 
         // SweetAlert2 warning alert
-    Swal.fire({
-      icon: 'warning',
-      title: 'Validation Error',
-      text: 'Please fill all required fields!',
-    });
+        Swal.fire({
+          icon: 'warning',
+          title: 'Validation Error',
+          text: 'Please fill all required fields!',
+        });
         return null; // Stop execution if validation fails
       }
-      
+
       // Step 5: PDF generation if no errors
       try {
         const doc = new jsPDF();
@@ -472,11 +481,11 @@ isValidEmail(email) {
         // Add header logo
         addHeaderLogo(doc, this.logoData, 10, 10); // margin = 10, yPosition = 10
 
-       // === Center: TAX INVOICE ===
-doc.setFont('helvetica', 'bold');
-doc.setFontSize(24);
-doc.setTextColor(0, 0, 0);
-doc.text('TAX INVOICE', pageWidth / 2, yPosition + 5, { align: 'center' });
+        // === Center: TAX INVOICE ===
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(24);
+        doc.setTextColor(0, 0, 0);
+        doc.text('TAX INVOICE', pageWidth / 2, yPosition + 5, { align: 'center' });
 
         // setting font size and font type
         doc.setFontSize(12);
@@ -484,175 +493,175 @@ doc.text('TAX INVOICE', pageWidth / 2, yPosition + 5, { align: 'center' });
 
         // Invoice Details
         const invoiceY = yPosition + 1; // start close to TAX INVOICE line
-const rightX = pageWidth - margin;
+        const rightX = pageWidth - margin;
 
-doc.setFontSize(10); // smaller than title
+        doc.setFontSize(10); // smaller than title
 
-doc.text(`Invoice Number: ${this.invoiceNumber}`, rightX, invoiceY, { align: 'right' });
-doc.text(`Bill Date: ${this.date}`, rightX, invoiceY + 8, { align: 'right' });
-doc.text(`Due Date: ${this.dueDate}`, rightX, invoiceY + 16, { align: 'right' });
-// Table Data (dynamically from your component props or data)
-const fromData = this.from || 'N/A';
-const billToData = this.billTo || 'N/A';
-const shipToData = this.shipTo || 'N/A';
-const taxNumber = this.TaxNO || 'N/A'; // New field
-
-
-const leftMargin = 10;
-const rightMargin = 10;
-// ✅ Use the global `pageWidth` (do not re-declare!)
-const tableWidth = pageWidth - leftMargin - rightMargin;
-const tableStartX = leftMargin; // ✅ Rename to avoid conflict
-
-const tableHead = [
-  [
-    { content: 'Sender', styles: { fontStyle: 'bold', fillColor: '#4078c0', textColor: '#ffffff' } },
-    { content: 'Bill To', styles: { fontStyle: 'bold', fillColor: '#4078c0', textColor: '#ffffff' } },
-    { content: 'Ship To', styles: { fontStyle: 'bold', fillColor: '#4078c0', textColor: '#ffffff' } },
-    { content: 'Client VAT or PAN', styles: { fontStyle: 'bold', fillColor: '#4078c0', textColor: '#ffffff' } }
-  ]
-];
-
-const tableBody = [
-  [
-    { content: fromData },
-    { content: billToData },
-    { content: shipToData },
-    { content: taxNumber }
-  ]
-];
-
-// jsPDF-AutoTable call
-autoTable(doc, {
-  startY: 60,
-  margin: { left: tableStartX, right: rightMargin },
-  tableWidth: tableWidth,
-  head: tableHead,
-  body: tableBody,
-  styles: {
-    halign: 'left',
-    valign: 'top',
-    fontSize: 10,
-    cellPadding: 4,
-    lineWidth: 0.1,
-    lineColor: [0, 0, 0]
-  },
-  
-});
-     // Define table columns (including S.NO)
-const columns = [
-  { header: 'S.NO', dataKey: 'sno' },
-  { header: 'Description', dataKey: 'description' },
-  { header: 'Quantity', dataKey: 'quantity' },
-  { header: 'Rate', dataKey: 'rate' },
-  { header: 'Amount', dataKey: 'amount' },
-];
-
-// Prepare table rows with S.NO
-const rows = this.items.map((item, index) => ({
-  sno: index + 1,
-  description: item.description || '',
-  quantity: item.quantity || 0,
-  rate: this.formattedAmount(item.rate || 0),
-  amount: this.formattedAmount(item.amount || 0),
-}));
-
-// Create the table
-autoTable(doc, {
-  startY: 100, // Adjusted to avoid overlap with previous content
-  
-  head: [columns.map(col => col.header)],
-  body: rows.map(row => columns.map(col => row[col.dataKey])),
-  styles: {
-    fontSize: 10,
-    cellPadding: 3,
-  },
-  headStyles: {
-    fillColor: [70, 78, 95],
-    textColor: 255,
-    fontStyle: 'bold',
-  },
-  alternateRowStyles: { fillColor: [240, 240, 240] },
-  margin: { left: 10, right: 10 },
-  theme: 'striped',
-});
-
-// 1. Calculate totals (this can be in utils if you'd like)
-const { totalQuantity, totalAmount } = calculateTotals(this.items);
-
-// 2. Define the summary as key-value pairs
-const summaryData = [
-  ['Total Qty', totalQuantity],
-  ['Taxable Amount', this.formattedAmount(totalAmount)],
-  ['Tax (%)', `${this.taxRate || 0}%`],
-  ['Discount', this.formattedAmount(this.discount || 0)],
-  ['Shipping', this.formattedAmount(this.shipping || 0)],
-  ['Total', this.formattedAmount(this.total || 0)],
-  ['Amount Paid', this.formattedAmount(this.amountPaid || 0)],
-  ['Balance Due', this.formattedAmount(this.balanceDue || 0)],
-];
-
-// 3. Render the horizontal table (2 columns)
-doc.autoTable({
-  startY: doc.lastAutoTable.finalY + 10,
-  head: [['Label', 'Value']],
-  body: summaryData,
-  styles: {
-    halign: 'left',
-    cellPadding: { left: 10, right: 10 },
-    fontSize: 10,
-    textColor: 20,
-  },
-  headStyles: {
-    fillColor: [40, 60, 100],
-    textColor: 255,
-    halign: 'center',
-  },
-  columnStyles: {
-    0: { cellWidth: 60 },  // Label column
-    1: { cellWidth: 60 },  // Value column
-  },
-});
+        doc.text(`Invoice Number: ${this.invoiceNumber}`, rightX, invoiceY, { align: 'right' });
+        doc.text(`Bill Date: ${this.date}`, rightX, invoiceY + 8, { align: 'right' });
+        doc.text(`Due Date: ${this.dueDate}`, rightX, invoiceY + 16, { align: 'right' });
+        // Table Data (dynamically from your component props or data)
+        const fromData = this.from || 'N/A';
+        const billToData = this.billTo || 'N/A';
+        const shipToData = this.shipTo || 'N/A';
+        const taxNumber = this.TaxNO || 'N/A'; // New field
 
 
-// Terms and Conditions Section
-let summaryMarginLeft = 15; // default fallback
-let summaryTableWidth = 160; // default fallback
+        const leftMargin = 10;
+        const rightMargin = 10;
+        // ✅ Use the global `pageWidth` (do not re-declare!)
+        const tableWidth = pageWidth - leftMargin - rightMargin;
+        const tableStartX = leftMargin; // ✅ Rename to avoid conflict
 
-if (doc.lastAutoTable && doc.lastAutoTable.table) {
-  summaryMarginLeft = doc.lastAutoTable.settings.margin.left;
-  summaryTableWidth = doc.lastAutoTable.table.width;
-}
+        const tableHead = [
+          [
+            { content: 'Sender', styles: { fontStyle: 'bold', fillColor: '#4078c0', textColor: '#ffffff' } },
+            { content: 'Bill To', styles: { fontStyle: 'bold', fillColor: '#4078c0', textColor: '#ffffff' } },
+            { content: 'Ship To', styles: { fontStyle: 'bold', fillColor: '#4078c0', textColor: '#ffffff' } },
+            { content: 'Client VAT or PAN', styles: { fontStyle: 'bold', fillColor: '#4078c0', textColor: '#ffffff' } }
+          ]
+        ];
 
-const summaryBottomY = doc.lastAutoTable ? doc.lastAutoTable.finalY : 0;
-if (this.terms) {
-  const splitTerms = doc.splitTextToSize(this.terms, summaryTableWidth - 20);
+        const tableBody = [
+          [
+            { content: fromData },
+            { content: billToData },
+            { content: shipToData },
+            { content: taxNumber }
+          ]
+        ];
 
-  doc.autoTable({
-    startY: summaryBottomY + 10,
-    head: [['Terms & Conditions']],
-    body: splitTerms.map(line => [line]),
-    margin: { left: summaryMarginLeft },
-    tableWidth: summaryTableWidth,
-    styles: {
-      fontSize: 10,
-      textColor: 20,
-      cellPadding: { left: 5, right: 5 },
-    },
-    headStyles: {
-      fillColor: [40, 60, 100],
-      textColor: 255,
-      fontStyle: 'bold',
-      halign: 'center',
-    },
-    bodyStyles: {
-      halign: 'left',
-    },
-    columnStyles: {
-      0: { cellWidth: summaryTableWidth - 20 },
-    },
-  });
-}
+        // jsPDF-AutoTable call
+        autoTable(doc, {
+          startY: 60,
+          margin: { left: tableStartX, right: rightMargin },
+          tableWidth: tableWidth,
+          head: tableHead,
+          body: tableBody,
+          styles: {
+            halign: 'left',
+            valign: 'top',
+            fontSize: 10,
+            cellPadding: 4,
+            lineWidth: 0.1,
+            lineColor: [0, 0, 0]
+          },
+
+        });
+        // Define table columns (including S.NO)
+        const columns = [
+          { header: 'S.NO', dataKey: 'sno' },
+          { header: 'Description', dataKey: 'description' },
+          { header: 'Quantity', dataKey: 'quantity' },
+          { header: 'Rate', dataKey: 'rate' },
+          { header: 'Amount', dataKey: 'amount' },
+        ];
+
+        // Prepare table rows with S.NO
+        const rows = this.items.map((item, index) => ({
+          sno: index + 1,
+          description: item.description || '',
+          quantity: item.quantity || 0,
+          rate: this.formattedAmount(item.rate || 0),
+          amount: this.formattedAmount(item.amount || 0),
+        }));
+
+        // Create the table
+        autoTable(doc, {
+          startY: 100, // Adjusted to avoid overlap with previous content
+
+          head: [columns.map(col => col.header)],
+          body: rows.map(row => columns.map(col => row[col.dataKey])),
+          styles: {
+            fontSize: 10,
+            cellPadding: 3,
+          },
+          headStyles: {
+            fillColor: [70, 78, 95],
+            textColor: 255,
+            fontStyle: 'bold',
+          },
+          alternateRowStyles: { fillColor: [240, 240, 240] },
+          margin: { left: 10, right: 10 },
+          theme: 'striped',
+        });
+
+        // 1. Calculate totals (this can be in utils if you'd like)
+        const { totalQuantity, totalAmount } = calculateTotals(this.items);
+
+        // 2. Define the summary as key-value pairs
+        const summaryData = [
+          ['Total Qty', totalQuantity],
+          ['Taxable Amount', this.formattedAmount(totalAmount)],
+          ['Tax (%)', `${this.taxRate || 0}%`],
+          ['Discount', this.formattedAmount(this.discount || 0)],
+          ['Shipping', this.formattedAmount(this.shipping || 0)],
+          ['Total', this.formattedAmount(this.total || 0)],
+          ['Amount Paid', this.formattedAmount(this.amountPaid || 0)],
+          ['Balance Due', this.formattedAmount(this.balanceDue || 0)],
+        ];
+
+        // 3. Render the horizontal table (2 columns)
+        doc.autoTable({
+          startY: doc.lastAutoTable.finalY + 10,
+          head: [['Label', 'Value']],
+          body: summaryData,
+          styles: {
+            halign: 'left',
+            cellPadding: { left: 10, right: 10 },
+            fontSize: 10,
+            textColor: 20,
+          },
+          headStyles: {
+            fillColor: [40, 60, 100],
+            textColor: 255,
+            halign: 'center',
+          },
+          columnStyles: {
+            0: { cellWidth: 60 },  // Label column
+            1: { cellWidth: 60 },  // Value column
+          },
+        });
+
+
+        // Terms and Conditions Section
+        let summaryMarginLeft = 15; // default fallback
+        let summaryTableWidth = 160; // default fallback
+
+        if (doc.lastAutoTable && doc.lastAutoTable.table) {
+          summaryMarginLeft = doc.lastAutoTable.settings.margin.left;
+          summaryTableWidth = doc.lastAutoTable.table.width;
+        }
+
+        const summaryBottomY = doc.lastAutoTable ? doc.lastAutoTable.finalY : 0;
+        if (this.terms) {
+          const splitTerms = doc.splitTextToSize(this.terms, summaryTableWidth - 20);
+
+          doc.autoTable({
+            startY: summaryBottomY + 10,
+            head: [['Terms & Conditions']],
+            body: splitTerms.map(line => [line]),
+            margin: { left: summaryMarginLeft },
+            tableWidth: summaryTableWidth,
+            styles: {
+              fontSize: 10,
+              textColor: 20,
+              cellPadding: { left: 5, right: 5 },
+            },
+            headStyles: {
+              fillColor: [40, 60, 100],
+              textColor: 255,
+              fontStyle: 'bold',
+              halign: 'center',
+            },
+            bodyStyles: {
+              halign: 'left',
+            },
+            columnStyles: {
+              0: { cellWidth: summaryTableWidth - 20 },
+            },
+          });
+        }
         // Footer Section
         const footerY = pageHeight - 20; // Fixed position at bottom
         doc.setFontSize(10);
@@ -668,11 +677,11 @@ if (this.terms) {
       } catch (error) {
         console.error('PDF Generation Error:', error);
         // SweetAlert2 error alert
-    Swal.fire({
-      icon: 'error',
-      title: 'PDF Generation Error',
-      text: `Error generating PDF: ${error.message}`,
-    });
+        Swal.fire({
+          icon: 'error',
+          title: 'PDF Generation Error',
+          text: `Error generating PDF: ${error.message}`,
+        });
         return null;
       }
     },
@@ -704,7 +713,7 @@ if (this.terms) {
         from: false,
         billTo: false,
         date: false,
-        
+
         dueDate: false,
         items: [],
         discount: false,
