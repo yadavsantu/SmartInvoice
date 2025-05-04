@@ -106,7 +106,7 @@ npm run serve
  ```
 6.	Access the Application:
     •	Open your browser and navigate to:
-  	  https://smartinvoice.onrender.com
+  	  [https://smartinvoice.onrender.com](https://smart-invoice-beta.vercel.app)
 ## Contribution
 
 We welcome contributions! To contribute:
